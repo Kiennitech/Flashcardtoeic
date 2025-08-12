@@ -686,7 +686,8 @@
             ui.playPauseBtn.addEventListener('click', () => { isPlaying ? stopAutoplay() : startAutoplay(); });
             ui.reviewBtn.addEventListener('click', handleReviewClick);
             ui.deleteBtn.addEventListener('click', handleDeleteFromReview);
-            ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden');
+            // *** FIXED LINE ***
+            ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden'));
             
             const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
             if(firstCategory) {
