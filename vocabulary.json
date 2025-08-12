@@ -1,0 +1,1650 @@
+{
+    "Office & Workplace": {
+        "make a decision": {
+            "phonetic": "/meɪk ə dɪˈsɪʒən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đưa ra quyết định",
+                    "examples": [
+                        {
+                            "en": "The manager needs to make a decision about the new project by Friday.",
+                            "vi": "Người quản lý cần đưa ra quyết định về dự án mới trước thứ Sáu."
+                        },
+                        {
+                            "en": "It's often hard to make a decision when you have many good options.",
+                            "vi": "Thường khó để đưa ra quyết định khi bạn có nhiều lựa chọn tốt."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a mistake": {
+            "phonetic": "/meɪk ə mɪˈsteɪk/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "phạm sai lầm",
+                    "examples": [
+                        {
+                            "en": "I'm sorry, I think I made a mistake on the report.",
+                            "vi": "Tôi xin lỗi, tôi nghĩ tôi đã phạm sai lầm trong báo cáo."
+                        },
+                        {
+                            "en": "It's important to double-check your work to avoid making a mistake.",
+                            "vi": "Điều quan trọng là phải kiểm tra lại công việc của bạn hai lần để tránh mắc lỗi."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make progress": {
+            "phonetic": "/meɪk ˈprɑːɡres/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "có tiến triển",
+                    "examples": [
+                        {
+                            "en": "The project team is working overtime to make progress on the urgent task.",
+                            "vi": "Nhóm dự án đang làm thêm giờ để có tiến triển trong nhiệm vụ khẩn cấp."
+                        },
+                        {
+                            "en": "After weeks of practice, the student finally started to make progress with her public speaking skills.",
+                            "vi": "Sau nhiều tuần luyện tập, học sinh đó cuối cùng đã bắt đầu có tiến triển với kỹ năng nói trước công chúng của mình."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make an appointment": {
+            "phonetic": "/meɪk ən əˈpɔɪntmənt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "sắp xếp một cuộc hẹn",
+                    "examples": [
+                        {
+                            "en": "You should make an appointment with the HR department to discuss your benefits.",
+                            "vi": "Bạn nên đặt lịch hẹn với phòng nhân sự để thảo luận về các phúc lợi của mình."
+                        },
+                        {
+                            "en": "Please make an appointment to see the manager sometime next week.",
+                            "vi": "Vui lòng đặt một cuộc hẹn để gặp quản lý vào tuần tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a phone call": {
+            "phonetic": "/meɪk ə foʊn kɔːl/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "gọi một cuộc điện thoại",
+                    "examples": [
+                        {
+                            "en": "I need to make a phone call to the client to confirm the appointment.",
+                            "vi": "Tôi cần gọi điện cho khách hàng để xác nhận cuộc hẹn."
+                        },
+                        {
+                            "en": "Please make a phone call to the help desk if you have any technical issues.",
+                            "vi": "Vui lòng gọi điện cho bộ phận hỗ trợ nếu bạn có bất kỳ vấn đề kỹ thuật nào."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a profit": {
+            "phonetic": "/meɪk ə ˈprɑːfɪt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tạo ra lợi nhuận",
+                    "examples": [
+                        {
+                            "en": "Our main goal is to make a profit this quarter.",
+                            "vi": "Mục tiêu chính của chúng tôi là tạo ra lợi nhuận trong quý này."
+                        },
+                        {
+                            "en": "To make a profit, businesses need to manage their costs carefully.",
+                            "vi": "Để tạo ra lợi nhuận, các doanh nghiệp cần quản lý chi phí cẩn thận."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a suggestion": {
+            "phonetic": "/meɪk ə səɡˈdʒestʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đưa ra gợi ý",
+                    "examples": [
+                        {
+                            "en": "During the brainstorming session, Sarah decided to make a suggestion about the marketing strategy.",
+                            "vi": "Trong buổi họp động não, Sarah quyết định đưa ra một gợi ý về chiến lược tiếp thị."
+                        },
+                        {
+                            "en": "The team leader asked everyone to make a suggestion if they had ideas to optimize the workflow.",
+                            "vi": "Trưởng nhóm yêu cầu mọi người đưa ra gợi ý nếu họ có ý tưởng để tối ưu hóa quy trình làm việc."
+                        }
+                    ]
+                }
+            ]
+        },
+        "do business": {
+            "phonetic": "/duː ˈbɪznəs/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "kinh doanh",
+                    "examples": [
+                        {
+                            "en": "Many companies want to do business in emerging markets.",
+                            "vi": "Nhiều công ty muốn kinh doanh tại các thị trường mới nổi."
+                        },
+                        {
+                            "en": "We are looking for reliable partners to do business with.",
+                            "vi": "Chúng tôi đang tìm kiếm các đối tác đáng tin cậy để kinh doanh cùng."
+                        }
+                    ]
+                }
+            ]
+        },
+        "do research": {
+            "phonetic": "/duː rɪˈsɜːrtʃ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "nghiên cứu",
+                    "examples": [
+                        {
+                            "en": "Before launching the new product, the company decided to do research on market trends.",
+                            "vi": "Trước khi ra mắt sản phẩm mới, công ty quyết định nghiên cứu về xu hướng thị trường."
+                        },
+                        {
+                            "en": "Students often do research online to gather information for their assignments.",
+                            "vi": "Sinh viên thường nghiên cứu trực tuyến để thu thập thông tin cho các bài tập của họ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "do a favor": {
+            "phonetic": "/duː ə ˈfeɪvər/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "làm giúp một việc",
+                    "examples": [
+                        {
+                            "en": "Could you please do me a favor and proofread this email before I send it?",
+                            "vi": "Bạn có thể làm ơn giúp tôi một việc và đọc lại email này trước khi tôi gửi không?"
+                        },
+                        {
+                            "en": "I'd be happy to do you a favor if you need help organizing the office supplies.",
+                            "vi": "Tôi rất sẵn lòng giúp bạn một việc nếu bạn cần giúp sắp xếp đồ dùng văn phòng."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take action": {
+            "phonetic": "/teɪk ˈækʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "hành động",
+                    "examples": [
+                        {
+                            "en": "The team needs to take action quickly to meet the project deadline.",
+                            "vi": "Đội cần hành động nhanh chóng để hoàn thành đúng thời hạn dự án."
+                        },
+                        {
+                            "en": "If we want to solve this issue, we must take action now, not later.",
+                            "vi": "Nếu chúng ta muốn giải quyết vấn đề này, chúng ta phải hành động ngay bây giờ, không phải sau này."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take a break": {
+            "phonetic": "/teɪk ə breɪk/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "nghỉ giải lao",
+                    "examples": [
+                        {
+                            "en": "After working for three hours, I really need to take a break.",
+                            "vi": "Sau khi làm việc ba tiếng, tôi thực sự cần nghỉ giải lao."
+                        },
+                        {
+                            "en": "Don't forget to take a break during your long study session to avoid burnout.",
+                            "vi": "Đừng quên nghỉ giải lao trong buổi học dài của bạn để tránh kiệt sức."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take notes": {
+            "phonetic": "/teɪk noʊts/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "ghi chú",
+                    "examples": [
+                        {
+                            "en": "It's essential to take notes during the presentation to remember key points.",
+                            "vi": "Việc ghi chú trong buổi thuyết trình là rất cần thiết để nhớ các điểm chính."
+                        },
+                        {
+                            "en": "Students are encouraged to take notes during the lecture to aid their understanding.",
+                            "vi": "Học sinh được khuyến khích ghi chú trong bài giảng để hỗ trợ việc hiểu bài."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take a risk": {
+            "phonetic": "/teɪk ə rɪsk/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "chấp nhận rủi ro",
+                    "examples": [
+                        {
+                            "en": "To expand into new markets, businesses often have to take a risk.",
+                            "vi": "Để mở rộng sang các thị trường mới, các doanh nghiệp thường phải chấp nhận rủi ro."
+                        },
+                        {
+                            "en": "She decided to take a risk and start her own company after leaving her stable job.",
+                            "vi": "Cô ấy quyết định chấp nhận rủi ro và thành lập công ty riêng sau khi rời bỏ công việc ổn định."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take responsibility for": {
+            "phonetic": "/teɪk rɪˌspɑːnsəˈbɪləti fɔːr/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "chịu trách nhiệm cho",
+                    "examples": [
+                        {
+                            "en": "The team leader decided to take responsibility for the project's delay.",
+                            "vi": "Trưởng nhóm đã quyết định chịu trách nhiệm về sự chậm trễ của dự án."
+                        },
+                        {
+                            "en": "Employees are encouraged to take responsibility for their own professional development.",
+                            "vi": "Nhân viên được khuyến khích chịu trách nhiệm cho sự phát triển nghề nghiệp của chính mình."
+                        }
+                    ]
+                }
+            ]
+        },
+        "have an effect on": {
+            "phonetic": "/hæv ən ɪˈfekt ɑːn/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "có ảnh hưởng đến",
+                    "examples": [
+                        {
+                            "en": "The new government policy is expected to have a significant effect on the local economy.",
+                            "vi": "Chính sách mới của chính phủ được kỳ vọng sẽ có ảnh hưởng đáng kể đến nền kinh tế địa phương."
+                        },
+                        {
+                            "en": "Poor customer service can have a negative effect on a company's reputation.",
+                            "vi": "Dịch vụ khách hàng kém có thể có ảnh hưởng tiêu cực đến danh tiếng của công ty."
+                        }
+                    ]
+                }
+            ]
+        },
+        "have a conversation": {
+            "phonetic": "/hæv ə ˌkɑːnvərˈseɪʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "có một cuộc trò chuyện",
+                    "examples": [
+                        {
+                            "en": "I need to have a conversation with my manager about my work schedule.",
+                            "vi": "Tôi cần có một cuộc trò chuyện với quản lý của mình về lịch làm việc."
+                        },
+                        {
+                            "en": "It's important to have a conversation with clients to understand their needs.",
+                            "vi": "Điều quan trọng là phải có một cuộc trò chuyện với khách hàng để hiểu nhu cầu của họ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "have difficulty": {
+            "phonetic": "/hæv ˈdɪfɪkəlti/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "gặp khó khăn",
+                    "examples": [
+                        {
+                            "en": "Many employees have difficulty adapting to the new software system.",
+                            "vi": "Nhiều nhân viên gặp khó khăn trong việc thích nghi với hệ thống phần mềm mới."
+                        },
+                        {
+                            "en": "She often has difficulty completing her tasks on time due to a heavy workload.",
+                            "vi": "Cô ấy thường gặp khó khăn trong việc hoàn thành nhiệm vụ đúng hạn do khối lượng công việc lớn."
+                        }
+                    ]
+                }
+            ]
+        },
+        "pay attention": {
+            "phonetic": "/peɪ əˈtenʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "chú ý",
+                    "examples": [
+                        {
+                            "en": "Please pay attention to the speaker's instructions during the training session.",
+                            "vi": "Vui lòng chú ý đến hướng dẫn của người nói trong buổi tập huấn."
+                        },
+                        {
+                            "en": "It's important to pay attention to the market trends when making investment decisions.",
+                            "vi": "Điều quan trọng là phải chú ý đến các xu hướng thị trường khi đưa ra quyết định đầu tư."
+                        }
+                    ]
+                }
+            ]
+        },
+        "pay a visit": {
+            "phonetic": "/peɪ ə ˈvɪzɪt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "ghé thăm",
+                    "examples": [
+                        {
+                            "en": "I plan to pay a visit to my grandparents next weekend.",
+                            "vi": "Tôi dự định ghé thăm ông bà tôi vào cuối tuần tới."
+                        },
+                        {
+                            "en": "Our team will pay a visit to the new factory site tomorrow.",
+                            "vi": "Đội của chúng tôi sẽ ghé thăm địa điểm nhà máy mới vào ngày mai."
+                        }
+                    ]
+                }
+            ]
+        },
+        "pay a compliment": {
+            "phonetic": "/peɪ ə ˈkɑːmplɪmənt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "khen ngợi",
+                    "examples": [
+                        {
+                            "en": "The client paid a compliment to our design team for their creativity.",
+                            "vi": "Khách hàng đã khen ngợi đội ngũ thiết kế của chúng tôi vì sự sáng tạo của họ."
+                        },
+                        {
+                            "en": "You should always try to pay a compliment when someone does a good job.",
+                            "vi": "Bạn nên luôn cố gắng khen ngợi khi ai đó làm tốt công việc."
+                        }
+                    ]
+                }
+            ]
+        },
+        "keep in touch": {
+            "phonetic": "/kiːp ɪn tʌtʃ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "giữ liên lạc",
+                    "examples": [
+                        {
+                            "en": "After the conference, it's a good idea to keep in touch with the people you met for future collaborations.",
+                            "vi": "Sau hội nghị, bạn nên giữ liên lạc với những người bạn đã gặp để có thể hợp tác trong tương lai."
+                        },
+                        {
+                            "en": "We promised to keep in touch regularly, even though we live in different countries now.",
+                            "vi": "Chúng tôi hứa sẽ giữ liên lạc thường xuyên, mặc dù bây giờ chúng tôi sống ở các quốc gia khác nhau."
+                        }
+                    ]
+                }
+            ]
+        },
+        "keep a promise": {
+            "phonetic": "/kiːp ə ˈprɑːmɪs/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "giữ lời hứa",
+                    "examples": [
+                        {
+                            "en": "It's important to keep a promise, especially in business.",
+                            "vi": "Giữ lời hứa là điều quan trọng, đặc biệt trong kinh doanh."
+                        },
+                        {
+                            "en": "She worked hard to keep a promise she made to her team.",
+                            "vi": "Cô ấy đã làm việc chăm chỉ để giữ lời hứa mình đã hứa với đội của mình."
+                        }
+                    ]
+                }
+            ]
+        },
+        "save time": {
+            "phonetic": "/seɪv taɪm/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tiết kiệm thời gian",
+                    "examples": [
+                        {
+                            "en": "Using the new software will save time on data entry.",
+                            "vi": "Sử dụng phần mềm mới sẽ tiết kiệm thời gian nhập liệu."
+                        },
+                        {
+                            "en": "Preparing your presentation in advance can save time on the day of the meeting.",
+                            "vi": "Chuẩn bị bài thuyết trình trước có thể tiết kiệm thời gian vào ngày họp."
+                        }
+                    ]
+                }
+            ]
+        },
+        "save money": {
+            "phonetic": "/seɪv ˈmʌni/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tiết kiệm tiền",
+                    "examples": [
+                        {
+                            "en": "She tries to save money every month to invest in stocks.",
+                            "vi": "Cô ấy cố gắng tiết kiệm tiền mỗi tháng để đầu tư vào cổ phiếu."
+                        },
+                        {
+                            "en": "To save money on gas, he carpools with his colleagues.",
+                            "vi": "Để tiết kiệm tiền xăng, anh ấy đi chung xe với các đồng nghiệp."
+                        }
+                    ]
+                }
+            ]
+        },
+        "meet a deadline": {
+            "phonetic": "/miːt ə ˈdedlaɪn/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "kịp hạn chót",
+                    "examples": [
+                        {
+                            "en": "She stayed late at the office to meet the deadline for the financial report.",
+                            "vi": "Cô ấy ở lại văn phòng muộn để kịp hạn chót báo cáo tài chính."
+                        },
+                        {
+                            "en": "Our team needs to work efficiently to meet the project deadline this Friday.",
+                            "vi": "Nhóm của chúng tôi cần làm việc hiệu quả để kịp hạn chót dự án vào thứ Sáu này."
+                        }
+                    ]
+                }
+            ]
+        },
+        "meet expectations": {
+            "phonetic": "/miːt ˌekspekˈteɪʃənz/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đáp ứng kỳ vọng",
+                    "examples": [
+                        {
+                            "en": "The new product successfully met customers' expectations for quality and performance.",
+                            "vi": "Sản phẩm mới đã đáp ứng thành công kỳ vọng của khách hàng về chất lượng và hiệu suất."
+                        },
+                        {
+                            "en": "Despite some challenges, the team managed to meet all the project's expectations on time.",
+                            "vi": "Mặc dù có một số thách thức, đội ngũ đã xoay sở để đáp ứng tất cả các kỳ vọng của dự án đúng hạn."
+                        }
+                    ]
+                }
+            ]
+        },
+        "solve a problem": {
+            "phonetic": "/sɑːlv ə ˈprɑːbləm/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "giải quyết một vấn đề",
+                    "examples": [
+                        {
+                            "en": "The team needs to solve this problem quickly to meet the deadline.",
+                            "vi": "Đội cần giải quyết vấn đề này nhanh chóng để kịp thời hạn."
+                        },
+                        {
+                            "en": "Effective communication can help us solve any problem that arises.",
+                            "vi": "Giao tiếp hiệu quả có thể giúp chúng ta giải quyết bất kỳ vấn đề nào phát sinh."
+                        }
+                    ]
+                }
+            ]
+        },
+        "place an order": {
+            "phonetic": "/pleɪs ən ˈɔːrdər/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đặt một đơn hàng",
+                    "examples": [
+                        {
+                            "en": "Customers can place an order directly on our website 24/7.",
+                            "vi": "Khách hàng có thể đặt một đơn hàng trực tiếp trên trang web của chúng tôi 24/7."
+                        },
+                        {
+                            "en": "The sales team expects us to place an order for the new software by Friday.",
+                            "vi": "Đội ngũ bán hàng mong chúng ta đặt một đơn hàng cho phần mềm mới trước thứ Sáu."
+                        }
+                    ]
+                }
+            ]
+        },
+        "strong competition": {
+            "phonetic": "/strɔːŋ ˌkɑːmpəˈtɪʃən/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "sự cạnh tranh khốc liệt",
+                    "examples": [
+                        {
+                            "en": "In today's fast-paced market, companies often face strong competition from various rivals.",
+                            "vi": "Trong thị trường đầy biến động ngày nay, các công ty thường đối mặt với sự cạnh tranh khốc liệt từ nhiều đối thủ."
+                        },
+                        {
+                            "en": "Despite strong competition, our startup managed to attract many new customers with its innovative service.",
+                            "vi": "Mặc dù có sự cạnh tranh khốc liệt, công ty khởi nghiệp của chúng tôi đã thu hút được nhiều khách hàng mới nhờ dịch vụ đổi mới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "high priority": {
+            "phonetic": "/haɪ praɪˈɔːrəti/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "ưu tiên hàng đầu",
+                    "examples": [
+                        {
+                            "en": "Customer satisfaction is a high priority for our business.",
+                            "vi": "Sự hài lòng của khách hàng là ưu tiên hàng đầu đối với doanh nghiệp của chúng tôi."
+                        },
+                        {
+                            "en": "Completing this report on time is a high priority for the project manager.",
+                            "vi": "Hoàn thành báo cáo này đúng hạn là ưu tiên hàng đầu đối với người quản lý dự án."
+                        }
+                    ]
+                }
+            ]
+        },
+        "high quality": {
+            "phonetic": "/haɪ ˈkwɑːləti/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "chất lượng cao",
+                    "examples": [
+                        {
+                            "en": "Our company is known for producing high-quality furniture that lasts for years.",
+                            "vi": "Công ty chúng tôi nổi tiếng về sản xuất đồ nội thất chất lượng cao có thể dùng được nhiều năm."
+                        },
+                        {
+                            "en": "Customers are willing to pay more for high-quality service and reliable products.",
+                            "vi": "Khách hàng sẵn lòng trả nhiều tiền hơn cho dịch vụ chất lượng cao và sản phẩm đáng tin cậy."
+                        }
+                    ]
+                }
+            ]
+        },
+        "key factor": {
+            "phonetic": "/kiː ˈfæktər/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "yếu tố then chốt",
+                    "examples": [
+                        {
+                            "en": "Good communication is a key factor in successful teamwork.",
+                            "vi": "Giao tiếp tốt là một yếu tố then chốt trong làm việc nhóm hiệu quả."
+                        },
+                        {
+                            "en": "Customer satisfaction is a key factor for a business's long-term success.",
+                            "vi": "Sự hài lòng của khách hàng là một yếu tố then chốt cho thành công lâu dài của một doanh nghiệp."
+                        }
+                    ]
+                }
+            ]
+        },
+        "key role": {
+            "phonetic": "/kiː roʊl/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "vai trò chủ chốt",
+                    "examples": [
+                        {
+                            "en": "The project manager played a key role in ensuring the team met its deadlines.",
+                            "vi": "Quản lý dự án đã đóng vai trò chủ chốt trong việc đảm bảo nhóm hoàn thành đúng thời hạn."
+                        },
+                        {
+                            "en": "Customer feedback plays a key role in the continuous improvement of our services.",
+                            "vi": "Phản hồi của khách hàng đóng vai trò chủ chốt trong việc cải tiến liên tục các dịch vụ của chúng tôi."
+                        }
+                    ]
+                }
+            ]
+        },
+        "major issue": {
+            "phonetic": "/ˈmeɪdʒər ˈɪʃuː/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "vấn đề chính",
+                    "examples": [
+                        {
+                            "en": "Poor customer service became a major issue for the company, leading to many complaints.",
+                            "vi": "Dịch vụ khách hàng kém đã trở thành một vấn đề chính đối với công ty, dẫn đến nhiều khiếu nại."
+                        },
+                        {
+                            "en": "Finding a reliable supplier is still a major issue for our production department.",
+                            "vi": "Việc tìm kiếm một nhà cung cấp đáng tin cậy vẫn là một vấn đề chính đối với bộ phận sản xuất của chúng tôi."
+                        }
+                    ]
+                }
+            ]
+        },
+        "valuable information": {
+            "phonetic": "/ˈvæljuəbəl ˌɪnfərˈmeɪʃən/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "thông tin quý giá",
+                    "examples": [
+                        {
+                            "en": "The market research report provided us with valuable information about customer preferences.",
+                            "vi": "Báo cáo nghiên cứu thị trường đã cung cấp cho chúng tôi thông tin quý giá về sở thích của khách hàng."
+                        },
+                        {
+                            "en": "Attendees said the workshop offered valuable information for career development.",
+                            "vi": "Những người tham dự cho biết hội thảo đã cung cấp thông tin quý giá cho việc phát triển sự nghiệp."
+                        }
+                    ]
+                }
+            ]
+        },
+        "annual meeting": {
+            "phonetic": "/ˈænjuəl ˈmiːtɪŋ/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "cuộc họp thường niên",
+                    "examples": [
+                        {
+                            "en": "The company's annual meeting is scheduled for next month.",
+                            "vi": "Cuộc họp thường niên của công ty được lên lịch vào tháng tới."
+                        },
+                        {
+                            "en": "Employees are encouraged to attend the annual meeting to hear about company performance.",
+                            "vi": "Nhân viên được khuyến khích tham dự cuộc họp thường niên để nghe về hiệu suất của công ty."
+                        }
+                    ]
+                }
+            ]
+        },
+        "competitive salary": {
+            "phonetic": "/kəmˈpetətɪv ˈsæləri/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "mức lương cạnh tranh",
+                    "examples": [
+                        {
+                            "en": "Our company offers a competitive salary and excellent benefits to attract top talent.",
+                            "vi": "Công ty chúng tôi cung cấp mức lương cạnh tranh và phúc lợi xuất sắc để thu hút nhân tài hàng đầu."
+                        },
+                        {
+                            "en": "The job description stated that the position comes with a competitive salary based on experience.",
+                            "vi": "Mô tả công việc nêu rõ vị trí này đi kèm với mức lương cạnh tranh dựa trên kinh nghiệm."
+                        }
+                    ]
+                }
+            ]
+        },
+        "highly recommended": {
+            "phonetic": "/ˈhaɪli ˌrekəˈmendɪd/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "rất được khuyến khích",
+                    "examples": [
+                        {
+                            "en": "This new accounting software is highly recommended for small businesses.",
+                            "vi": "Phần mềm kế toán mới này rất được khuyến khích cho các doanh nghiệp nhỏ."
+                        },
+                        {
+                            "en": "The business negotiation workshop was highly recommended by the senior managers.",
+                            "vi": "Khóa hội thảo đàm phán kinh doanh rất được các quản lý cấp cao khuyến khích."
+                        }
+                    ]
+                }
+            ]
+        },
+        "highly successful": {
+            "phonetic": "/ˈhaɪli səkˈsesfəl/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "rất thành công",
+                    "examples": [
+                        {
+                            "en": "The company's new product launch was highly successful, exceeding all sales targets.",
+                            "vi": "Sản phẩm mới ra mắt của công ty đã rất thành công, vượt qua mọi mục tiêu doanh số."
+                        },
+                        {
+                            "en": "She is a highly successful manager, known for her ability to motivate teams.",
+                            "vi": "Cô ấy là một quản lý rất thành công, nổi tiếng với khả năng truyền động lực cho các đội nhóm."
+                        }
+                    ]
+                }
+            ]
+        },
+        "fully aware": {
+            "phonetic": "/ˈfʊli əˈwer/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "nhận thức đầy đủ",
+                    "examples": [
+                        {
+                            "en": "The project manager was fully aware of the budget constraints and adjusted the plan accordingly.",
+                            "vi": "Người quản lý dự án đã hoàn toàn nhận thức được những hạn chế về ngân sách và điều chỉnh kế hoạch cho phù hợp."
+                        },
+                        {
+                            "en": "Before investing, make sure you are fully aware of all the potential risks involved.",
+                            "vi": "Trước khi đầu tư, hãy đảm bảo bạn hoàn toàn nhận thức được tất cả các rủi ro tiềm ẩn liên quan."
+                        }
+                    ]
+                }
+            ]
+        },
+        "fully booked": {
+            "phonetic": "/ˈfʊli bʊkt/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "đã được đặt hết chỗ",
+                    "examples": [
+                        {
+                            "en": "I'm sorry, but the hotel is fully booked for the entire weekend.",
+                            "vi": "Tôi xin lỗi, nhưng khách sạn đã được đặt hết chỗ cho cả cuối tuần rồi."
+                        },
+                        {
+                            "en": "The evening show is fully booked, but there are still seats available for the matinee.",
+                            "vi": "Buổi biểu diễn tối đã được đặt hết chỗ, nhưng vẫn còn ghế cho buổi chiếu ban ngày."
+                        }
+                    ]
+                }
+            ]
+        },
+        "strongly agree/disagree": {
+            "phonetic": "/ˈstrɔːŋli əˈɡriː/dɪsəˈɡriː/",
+            "meanings": [
+                {
+                    "type": "Adv + Verb",
+                    "meaning": "hoàn toàn đồng ý",
+                    "examples": [
+                        {
+                            "en": "I strongly agree with the new policy to allow remote work.",
+                            "vi": "Tôi hoàn toàn đồng ý với chính sách mới cho phép làm việc từ xa."
+                        }
+                    ]
+                },
+                {
+                    "type": "Adv + Verb",
+                    "meaning": "không đồng ý",
+                    "examples": [
+                        {
+                            "en": "Our team strongly disagreed with the proposed budget cuts for marketing.",
+                            "vi": "Nhóm của chúng tôi hoàn toàn không đồng ý với đề xuất cắt giảm ngân sách cho tiếp thị."
+                        }
+                    ]
+                }
+            ]
+        },
+        "vitally important": {
+            "phonetic": "/ˈvaɪtəli ɪmˈpɔːrtənt/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "cực kỳ quan trọng",
+                    "examples": [
+                        {
+                            "en": "Effective communication is vitally important for team success in any project.",
+                            "vi": "Giao tiếp hiệu quả là cực kỳ quan trọng đối với sự thành công của đội nhóm trong bất kỳ dự án nào."
+                        },
+                        {
+                            "en": "It is vitally important to review the contract details before signing any agreement.",
+                            "vi": "Việc xem xét các chi tiết hợp đồng là cực kỳ quan trọng trước khi ký bất kỳ thỏa thuận nào."
+                        }
+                    ]
+                }
+            ]
+        },
+        "deeply concerned": {
+            "phonetic": "/ˈdiːpli kənˈsɜːrnd/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "quan ngại sâu sắc",
+                    "examples": [
+                        {
+                            "en": "The management team is deeply concerned about the recent decrease in customer satisfaction scores.",
+                            "vi": "Ban quản lý rất quan ngại sâu sắc về sự sụt giảm gần đây trong điểm số hài lòng của khách hàng."
+                        },
+                        {
+                            "en": "Employees are deeply concerned about the potential impact of the new company policy on their work-life balance.",
+                            "vi": "Các nhân viên rất quan ngại sâu sắc về tác động tiềm tàng của chính sách công ty mới đối với sự cân bằng giữa công việc và cuộc sống của họ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "break a record": {
+            "phonetic": "/breɪk ə ˈrekərd/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "phá vỡ kỷ lục",
+                    "examples": [
+                        {
+                            "en": "The athlete trained for years to break a record in the high jump.",
+                            "vi": "Vận động viên đã tập luyện nhiều năm để phá vỡ kỷ lục nhảy cao."
+                        },
+                        {
+                            "en": "Our company aims to break a record for sales by the end of the fiscal year.",
+                            "vi": "Công ty chúng tôi đặt mục tiêu phá vỡ kỷ lục doanh số vào cuối năm tài chính."
+                        }
+                    ]
+                }
+            ]
+        },
+        "break the law": {
+            "phonetic": "/breɪk ðə lɔː/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "phạm luật",
+                    "examples": [
+                        {
+                            "en": "It is important for all citizens to understand the consequences of breaking the law.",
+                            "vi": "Điều quan trọng là tất cả công dân phải hiểu hậu quả của việc phạm luật."
+                        },
+                        {
+                            "en": "The company was fined heavily for repeatedly breaking the law on data privacy.",
+                            "vi": "Công ty đã bị phạt nặng vì liên tục phạm luật về quyền riêng tư dữ liệu."
+                        }
+                    ]
+                }
+            ]
+        },
+        "catch a bus/train": {
+            "phonetic": "/kætʃ ə bʌs/treɪn/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "bắt xe buýt",
+                    "examples": [
+                        {
+                            "en": "You should leave early if you want to catch the morning bus.",
+                            "vi": "Bạn nên đi sớm nếu muốn bắt chuyến xe buýt sáng."
+                        }
+                    ]
+                },
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tàu",
+                    "examples": [
+                        {
+                            "en": "We missed our connection, so we had to wait to catch the next train.",
+                            "vi": "Chúng tôi bị lỡ chuyến nối chuyến nên phải đợi để bắt chuyến tàu tiếp theo."
+                        }
+                    ]
+                }
+            ]
+        },
+        "catch someone's eye": {
+            "phonetic": "/kætʃ ˈsʌmwʌnz aɪ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "thu hút sự chú ý của ai đó",
+                    "examples": [
+                        {
+                            "en": "The colorful advertisement immediately caught my eye as I walked past the store.",
+                            "vi": "Mẩu quảng cáo đầy màu sắc ngay lập tức thu hút sự chú ý của tôi khi tôi đi ngang qua cửa hàng."
+                        },
+                        {
+                            "en": "She tried to catch the professor's eye to ask a question before the class ended.",
+                            "vi": "Cô ấy cố gắng thu hút sự chú ý của giáo sư để đặt câu hỏi trước khi lớp học kết thúc."
+                        }
+                    ]
+                }
+            ]
+        },
+        "express concern": {
+            "phonetic": "/ɪkˈspres kənˈsɜːrn/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "bày tỏ sự quan ngại",
+                    "examples": [
+                        {
+                            "en": "The manager decided to express concern about the team's declining productivity.",
+                            "vi": "Người quản lý đã quyết định bày tỏ sự quan ngại về năng suất làm việc ngày càng giảm của đội."
+                        },
+                        {
+                            "en": "Several employees expressed concern about the new policy's impact on their work-life balance.",
+                            "vi": "Một số nhân viên đã bày tỏ sự quan ngại về tác động của chính sách mới đến sự cân bằng giữa công việc và cuộc sống của họ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "face a challenge": {
+            "phonetic": "/feɪs ə ˈtʃæləndʒ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đối mặt với thử thách",
+                    "examples": [
+                        {
+                            "en": "Employees often face a challenge when adapting to new company policies.",
+                            "vi": "Nhân viên thường đối mặt với thử thách khi thích nghi với các chính sách mới của công ty."
+                        },
+                        {
+                            "en": "Our sales team is ready to face a challenge in the competitive market this quarter.",
+                            "vi": "Đội ngũ bán hàng của chúng tôi đã sẵn sàng đối mặt với thử thách trong thị trường cạnh tranh quý này."
+                        }
+                    ]
+                }
+            ]
+        },
+        "file a complaint": {
+            "phonetic": "/faɪl ə kəmˈpleɪnt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "nộp đơn khiếu nại",
+                    "examples": [
+                        {
+                            "en": "If you are not satisfied with the product, you can file a complaint online.",
+                            "vi": "Nếu bạn không hài lòng với sản phẩm, bạn có thể nộp đơn khiếu nại trực tuyến."
+                        },
+                        {
+                            "en": "The customer decided to file a complaint about the late delivery.",
+                            "vi": "Khách hàng đã quyết định nộp đơn khiếu nại về việc giao hàng trễ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "follow instructions": {
+            "phonetic": "/ˈfɑːloʊ ɪnˈstrʌkʃənz/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "làm theo hướng dẫn",
+                    "examples": [
+                        {
+                            "en": "It's essential for all team members to follow instructions precisely to ensure project success.",
+                            "vi": "Điều cần thiết là tất cả các thành viên trong nhóm phải làm theo hướng dẫn một cách chính xác để đảm bảo dự án thành công."
+                        },
+                        {
+                            "en": "During the safety drill, please make sure to follow instructions from the designated personnel.",
+                            "vi": "Trong buổi diễn tập an toàn, vui lòng đảm bảo làm theo hướng dẫn từ nhân viên được chỉ định."
+                        }
+                    ]
+                }
+            ]
+        },
+        "gain experience": {
+            "phonetic": "/ɡeɪn ɪkˈspɪriəns/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tích lũy kinh nghiệm",
+                    "examples": [
+                        {
+                            "en": "Internships are an excellent way for students to gain experience in their chosen field.",
+                            "vi": "Thực tập là một cách tuyệt vời để sinh viên tích lũy kinh nghiệm trong lĩnh vực đã chọn."
+                        },
+                        {
+                            "en": "Working on various team projects helped him gain valuable experience in collaboration.",
+                            "vi": "Làm việc trên nhiều dự án nhóm khác nhau đã giúp anh ấy tích lũy kinh nghiệm quý báu về hợp tác."
+                        }
+                    ]
+                }
+            ]
+        },
+        "give a presentation": {
+            "phonetic": "/ɡɪv ə ˌpriːzenˈteɪʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "thuyết trình",
+                    "examples": [
+                        {
+                            "en": "Our team needs to give a presentation on the quarterly sales report next Tuesday.",
+                            "vi": "Nhóm chúng ta cần thuyết trình về báo cáo doanh số quý vào thứ Ba tới."
+                        },
+                        {
+                            "en": "The project manager gave an impressive presentation about the budget proposal.",
+                            "vi": "Quản lý dự án đã có một bài thuyết trình ấn tượng về đề xuất ngân sách."
+                        }
+                    ]
+                }
+            ]
+        },
+        "give priority to": {
+            "phonetic": "/ɡɪv praɪˈɔːrəti tu/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "ưu tiên cho",
+                    "examples": [
+                        {
+                            "en": "The project manager decided to give priority to tasks that directly impact customer satisfaction.",
+                            "vi": "Người quản lý dự án quyết định ưu tiên những nhiệm vụ ảnh hưởng trực tiếp đến sự hài lòng của khách hàng."
+                        },
+                        {
+                            "en": "In our company, we always give priority to employee safety and well-being.",
+                            "vi": "Tại công ty chúng tôi, chúng tôi luôn ưu tiên sự an toàn và phúc lợi của nhân viên."
+                        }
+                    ]
+                }
+            ]
+        },
+        "go bankrupt": {
+            "phonetic": "/ɡoʊ ˈbæŋkrʌpt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "phá sản",
+                    "examples": [
+                        {
+                            "en": "The small business had to go bankrupt after sales dropped significantly.",
+                            "vi": "Doanh nghiệp nhỏ đã phải phá sản sau khi doanh số giảm đáng kể."
+                        },
+                        {
+                            "en": "If the company doesn't secure new funding, it's likely to go bankrupt by next quarter.",
+                            "vi": "Nếu công ty không đảm bảo được nguồn tài trợ mới, có khả năng nó sẽ phá sản vào quý tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "have access to": {
+            "phonetic": "/hæv ˈækses tu/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "có quyền truy cập vào",
+                    "examples": [
+                        {
+                            "en": "All team members will have access to the shared project files.",
+                            "vi": "Tất cả thành viên trong nhóm sẽ có quyền truy cập vào các tệp dự án dùng chung."
+                        },
+                        {
+                            "en": "Customers with a premium account have access to exclusive online content.",
+                            "vi": "Khách hàng có tài khoản cao cấp có quyền truy cập vào nội dung trực tuyến độc quyền."
+                        }
+                    ]
+                }
+            ]
+        },
+        "hold a meeting": {
+            "phonetic": "/hoʊld ə ˈmiːtɪŋ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tổ chức một cuộc họp",
+                    "examples": [
+                        {
+                            "en": "We need to hold a meeting next week to discuss the new marketing strategy.",
+                            "vi": "Chúng ta cần tổ chức một cuộc họp vào tuần tới để thảo luận về chiến lược tiếp thị mới."
+                        },
+                        {
+                            "en": "The manager decided to hold a meeting this afternoon to address the team's concerns.",
+                            "vi": "Người quản lý quyết định tổ chức một cuộc họp chiều nay để giải quyết các mối quan ngại của nhóm."
+                        }
+                    ]
+                }
+            ]
+        },
+        "join a company": {
+            "phonetic": "/dʒɔɪn ə ˈkʌmpəni/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "gia nhập một công ty",
+                    "examples": [
+                        {
+                            "en": "After graduating, she hopes to join a reputable tech company.",
+                            "vi": "Sau khi tốt nghiệp, cô ấy hy vọng sẽ gia nhập một công ty công nghệ có uy tín."
+                        },
+                        {
+                            "en": "He decided to join a smaller startup because he wanted more responsibility.",
+                            "vi": "Anh ấy quyết định gia nhập một công ty khởi nghiệp nhỏ hơn vì anh ấy muốn có nhiều trách nhiệm hơn."
+                        }
+                    ]
+                }
+            ]
+        },
+        "keep a record": {
+            "phonetic": "/kiːp ə ˈrekərd/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "lưu giữ hồ sơ",
+                    "examples": [
+                        {
+                            "en": "It's important for businesses to keep a record of all their transactions for tax purposes.",
+                            "vi": "Điều quan trọng là các doanh nghiệp phải lưu giữ hồ sơ về tất cả các giao dịch của họ cho mục đích thuế."
+                        },
+                        {
+                            "en": "Our team needs to keep a record of customer feedback to improve our services.",
+                            "vi": "Nhóm của chúng tôi cần lưu giữ hồ sơ phản hồi của khách hàng để cải thiện dịch vụ của chúng tôi."
+                        }
+                    ]
+                }
+            ]
+        },
+        "launch a product": {
+            "phonetic": "/lɔːntʃ ə ˈprɑːdʌkt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "ra mắt một sản phẩm",
+                    "examples": [
+                        {
+                            "en": "The tech company plans to launch a new smartphone next quarter.",
+                            "vi": "Công ty công nghệ dự định ra mắt một điện thoại thông minh mới vào quý tới."
+                        },
+                        {
+                            "en": "Before we launch a product, we need to ensure our marketing strategy is ready.",
+                            "vi": "Trước khi chúng ta ra mắt một sản phẩm, chúng ta cần đảm bảo chiến lược tiếp thị của mình đã sẵn sàng."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a reservation": {
+            "phonetic": "/meɪk ə ˌrezərˈveɪʃən/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đặt chỗ trước",
+                    "examples": [
+                        {
+                            "en": "You should make a reservation at the restaurant, especially on weekends.",
+                            "vi": "Bạn nên đặt chỗ trước ở nhà hàng, đặc biệt là vào cuối tuần."
+                        },
+                        {
+                            "en": "We need to make a reservation for a meeting room by Friday for next week's presentation.",
+                            "vi": "Chúng ta cần đặt trước một phòng họp trước thứ Sáu cho buổi thuyết trình tuần tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "make a request": {
+            "phonetic": "/meɪk ə rɪˈkwest/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đưa ra yêu cầu",
+                    "examples": [
+                        {
+                            "en": "Employees can make a request for flexible working hours to their manager.",
+                            "vi": "Nhân viên có thể đưa ra yêu cầu về giờ làm việc linh hoạt cho quản lý của họ."
+                        },
+                        {
+                            "en": "If you wish to access your personal data, you must make a request in writing.",
+                            "vi": "Nếu bạn muốn truy cập dữ liệu cá nhân của mình, bạn phải đưa ra yêu cầu bằng văn bản."
+                        }
+                    ]
+                }
+            ]
+        },
+        "offer a discount": {
+            "phonetic": "/ˈɔːfər ə ˈdɪskaʊnt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "giảm giá",
+                    "examples": [
+                        {
+                            "en": "The electronics store will offer a discount on all laptops next week.",
+                            "vi": "Cửa hàng điện tử sẽ giảm giá tất cả máy tính xách tay vào tuần tới."
+                        },
+                        {
+                            "en": "We decided to offer a discount to customers who pay in cash.",
+                            "vi": "Chúng tôi quyết định giảm giá cho những khách hàng thanh toán bằng tiền mặt."
+                        }
+                    ]
+                }
+            ]
+        },
+        "reach a target": {
+            "phonetic": "/riːtʃ ə ˈtɑːrɡɪt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đạt được mục tiêu",
+                    "examples": [
+                        {
+                            "en": "The sales team worked diligently to reach their quarterly target.",
+                            "vi": "Đội ngũ bán hàng đã làm việc chăm chỉ để đạt được mục tiêu hàng quý của họ."
+                        },
+                        {
+                            "en": "If we optimize our processes, we can definitely reach our production target by next month.",
+                            "vi": "Nếu chúng ta tối ưu hóa quy trình, chúng ta chắc chắn có thể đạt được mục tiêu sản xuất vào tháng tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "run a business": {
+            "phonetic": "/rʌn ə ˈbɪznəs/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "điều hành kinh doanh",
+                    "examples": [
+                        {
+                            "en": "It takes a lot of effort to successfully run a business in today's market.",
+                            "vi": "Cần rất nhiều nỗ lực để điều hành thành công một doanh nghiệp trong thị trường ngày nay."
+                        },
+                        {
+                            "en": "After years of experience, she felt ready to run a business on her own.",
+                            "vi": "Sau nhiều năm kinh nghiệm, cô ấy cảm thấy sẵn sàng tự mình điều hành một doanh nghiệp."
+                        }
+                    ]
+                }
+            ]
+        },
+        "set a goal": {
+            "phonetic": "/set ə ɡoʊl/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đặt ra mục tiêu",
+                    "examples": [
+                        {
+                            "en": "Before starting a new project, it's important to set a clear goal.",
+                            "vi": "Trước khi bắt đầu một dự án mới, điều quan trọng là phải đặt ra một mục tiêu rõ ràng."
+                        },
+                        {
+                            "en": "Our team decided to set a goal of increasing sales by 15% this quarter.",
+                            "vi": "Nhóm của chúng tôi đã quyết định đặt mục tiêu tăng doanh số 15% trong quý này."
+                        }
+                    ]
+                }
+            ]
+        },
+        "sign a contract": {
+            "phonetic": "/saɪn ə ˈkɑːntrækt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "ký hợp đồng",
+                    "examples": [
+                        {
+                            "en": "The company expects the new sales director to sign a contract by the end of the week.",
+                            "vi": "Công ty mong giám đốc kinh doanh mới sẽ ký hợp đồng vào cuối tuần."
+                        },
+                        {
+                            "en": "Before you can begin working on the project, you must sign a contract with our legal department.",
+                            "vi": "Trước khi bạn có thể bắt đầu làm việc trong dự án, bạn phải ký hợp đồng với phòng pháp lý của chúng tôi."
+                        }
+                    ]
+                }
+            ]
+        },
+        "submit a report": {
+            "phonetic": "/səbˈmɪt ə rɪˈpɔːrt/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "nộp báo cáo",
+                    "examples": [
+                        {
+                            "en": "All team leaders must submit a report to the manager by Friday.",
+                            "vi": "Tất cả trưởng nhóm phải nộp báo cáo cho quản lý trước thứ Sáu."
+                        },
+                        {
+                            "en": "You need to submit a report on your project's findings next week.",
+                            "vi": "Bạn cần nộp báo cáo về những phát hiện của dự án vào tuần tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "take an opportunity": {
+            "phonetic": "/teɪk ən ˌɑːpərˈtuːnəti/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "nắm lấy cơ hội",
+                    "examples": [
+                        {
+                            "en": "She decided to take an opportunity to study abroad and improve her English skills.",
+                            "vi": "Cô ấy quyết định nắm lấy cơ hội đi du học để cải thiện kỹ năng tiếng Anh của mình."
+                        },
+                        {
+                            "en": "When the project manager left, he was quick to take an opportunity and apply for the leadership role.",
+                            "vi": "Khi người quản lý dự án rời đi, anh ấy đã nhanh chóng nắm lấy cơ hội và nộp đơn xin vai trò lãnh đạo."
+                        }
+                    ]
+                }
+            ]
+        },
+        "achieve a goal": {
+            "phonetic": "/əˈtʃiːv ə ɡoʊl/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "đạt được mục tiêu",
+                    "examples": [
+                        {
+                            "en": "She worked hard to achieve her goal of becoming a team leader.",
+                            "vi": "Cô ấy đã làm việc chăm chỉ để đạt được mục tiêu trở thành trưởng nhóm."
+                        },
+                        {
+                            "en": "With proper planning, you can achieve your goal of completing the project on time.",
+                            "vi": "Với kế hoạch đúng đắn, bạn có thể đạt được mục tiêu hoàn thành dự án đúng hạn."
+                        }
+                    ]
+                }
+            ]
+        },
+        "conduct a survey": {
+            "phonetic": "/kənˈdʌkt ə ˈsɜːrveɪ/",
+            "meanings": [
+                {
+                    "type": "Verb + Noun",
+                    "meaning": "tiến hành một cuộc khảo sát",
+                    "examples": [
+                        {
+                            "en": "The company decided to conduct a survey to gather feedback on their new service.",
+                            "vi": "Công ty đã quyết định tiến hành một cuộc khảo sát để thu thập phản hồi về dịch vụ mới của họ."
+                        },
+                        {
+                            "en": "We plan to conduct a survey next month to assess employee satisfaction.",
+                            "vi": "Chúng tôi dự định tiến hành một cuộc khảo sát vào tháng tới để đánh giá sự hài lòng của nhân viên."
+                        }
+                    ]
+                }
+            ]
+        },
+        "comprehensive insurance": {
+            "phonetic": "/ˌkɑːmprɪˈhensɪv ɪnˈʃʊrəns/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "bảo hiểm toàn diện",
+                    "examples": [
+                        {
+                            "en": "Getting comprehensive insurance for your car offers protection against various types of damage, including theft and natural disasters.",
+                            "vi": "Việc mua bảo hiểm toàn diện cho xe ô tô của bạn giúp bảo vệ chống lại nhiều loại thiệt hại khác nhau, bao gồm trộm cắp và thiên tai."
+                        },
+                        {
+                            "en": "The travel agency recommended comprehensive insurance to cover any unexpected medical emergencies or trip cancellations.",
+                            "vi": "Công ty du lịch đã đề xuất bảo hiểm toàn diện để chi trả cho bất kỳ trường hợp cấp cứu y tế hoặc hủy chuyến đi không mong muốn nào."
+                        }
+                    ]
+                }
+            ]
+        },
+        "customer loyalty": {
+            "phonetic": "/ˈkʌstəmər ˈlɔɪəlti/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "lòng trung thành của khách hàng",
+                    "examples": [
+                        {
+                            "en": "Providing excellent service is key to building strong customer loyalty.",
+                            "vi": "Cung cấp dịch vụ xuất sắc là yếu tố then chốt để xây dựng lòng trung thành của khách hàng vững chắc."
+                        },
+                        {
+                            "en": "The new rewards program is designed to increase customer loyalty among frequent shoppers.",
+                            "vi": "Chương trình khách hàng thân thiết mới được thiết kế để tăng lòng trung thành của khách hàng thường xuyên mua sắm."
+                        }
+                    ]
+                }
+            ]
+        },
+        "direct deposit": {
+            "phonetic": "/dəˈrekt dɪˈpɑːzɪt/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "gửi tiền trực tiếp",
+                    "examples": [
+                        {
+                            "en": "Many companies offer direct deposit for employee paychecks, which is convenient.",
+                            "vi": "Nhiều công ty cung cấp dịch vụ gửi tiền trực tiếp cho tiền lương của nhân viên, điều này rất tiện lợi."
+                        },
+                        {
+                            "en": "You can sign up for direct deposit to have your refund automatically sent to your bank account.",
+                            "vi": "Bạn có thể đăng ký gửi tiền trực tiếp để tiền hoàn trả của bạn được tự động gửi vào tài khoản ngân hàng."
+                        }
+                    ]
+                }
+            ]
+        },
+        "main objective": {
+            "phonetic": "/meɪn əbˈdʒektɪv/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "mục tiêu chính",
+                    "examples": [
+                        {
+                            "en": "The main objective of this training program is to improve employees' customer service skills.",
+                            "vi": "Mục tiêu chính của chương trình đào tạo này là nâng cao kỹ năng phục vụ khách hàng của nhân viên."
+                        },
+                        {
+                            "en": "Our main objective for the quarter is to increase sales by 15%.",
+                            "vi": "Mục tiêu chính của chúng tôi trong quý này là tăng doanh số bán hàng lên 15%."
+                        }
+                    ]
+                }
+            ]
+        },
+        "market leader": {
+            "phonetic": "/ˈmɑːrkɪt ˈliːdər/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "công ty dẫn đầu thị trường",
+                    "examples": [
+                        {
+                            "en": "Our company aims to become the market leader in eco-friendly products within the next two years.",
+                            "vi": "Công ty chúng tôi đặt mục tiêu trở thành công ty dẫn đầu thị trường trong các sản phẩm thân thiện với môi trường trong vòng hai năm tới."
+                        },
+                        {
+                            "en": "To maintain its position as the market leader, the smartphone manufacturer consistently releases innovative models.",
+                            "vi": "Để duy trì vị trí là công ty dẫn đầu thị trường, nhà sản xuất điện thoại thông minh liên tục tung ra các mẫu mã đổi mới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "press conference": {
+            "phonetic": "/pres ˈkɑːnfərəns/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "họp báo",
+                    "examples": [
+                        {
+                            "en": "The CEO will hold a press conference tomorrow morning to discuss the company's financial results.",
+                            "vi": "Giám đốc điều hành sẽ tổ chức một cuộc họp báo vào sáng mai để thảo luận về kết quả tài chính của công ty."
+                        },
+                        {
+                            "en": "During the press conference, the spokesperson answered many questions from the journalists.",
+                            "vi": "Trong cuộc họp báo, người phát ngôn đã trả lời nhiều câu hỏi từ các nhà báo."
+                        }
+                    ]
+                }
+            ]
+        },
+        "promotional materials": {
+            "phonetic": "/prəˈmoʊʃənəl məˈtɪriəlz/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "tài liệu quảng cáo",
+                    "examples": [
+                        {
+                            "en": "The marketing team designed new promotional materials for the product launch event.",
+                            "vi": "Đội ngũ tiếp thị đã thiết kế các tài liệu quảng cáo mới cho sự kiện ra mắt sản phẩm."
+                        },
+                        {
+                            "en": "We need to print more promotional materials to hand out at the trade show next week.",
+                            "vi": "Chúng ta cần in thêm tài liệu quảng cáo để phát tại hội chợ thương mại vào tuần tới."
+                        }
+                    ]
+                }
+            ]
+        },
+        "regular basis": {
+            "phonetic": "/ˈreɡjələr ˈbeɪsɪs/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "một cách thường xuyên",
+                    "examples": [
+                        {
+                            "en": "Employees should submit their expense reports on a regular basis.",
+                            "vi": "Nhân viên nên nộp báo cáo chi phí của họ một cách thường xuyên."
+                        },
+                        {
+                            "en": "The team holds meetings on a regular basis to discuss project updates.",
+                            "vi": "Nhóm tổ chức các cuộc họp một cách thường xuyên để thảo luận về cập nhật dự án."
+                        }
+                    ]
+                }
+            ]
+        },
+        "sales figures": {
+            "phonetic": "/seɪlz ˈfɪɡjərz/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "số liệu bán hàng",
+                    "examples": [
+                        {
+                            "en": "The marketing team needs to review the sales figures from last quarter.",
+                            "vi": "Đội ngũ tiếp thị cần xem xét số liệu bán hàng từ quý trước."
+                        },
+                        {
+                            "en": "Strong sales figures indicate that our new product is very popular.",
+                            "vi": "Số liệu bán hàng mạnh mẽ cho thấy sản phẩm mới của chúng ta rất được ưa chuộng."
+                        }
+                    ]
+                }
+            ]
+        },
+        "target audience": {
+            "phonetic": "/ˈtɑːrɡɪt ˈɔːdiəns/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "khán giả mục tiêu",
+                    "examples": [
+                        {
+                            "en": "Our marketing team needs to clearly identify our target audience before launching the new product.",
+                            "vi": "Đội ngũ tiếp thị của chúng ta cần xác định rõ khán giả mục tiêu trước khi ra mắt sản phẩm mới."
+                        },
+                        {
+                            "en": "The presenter adjusted his speech to better connect with the target audience of young professionals.",
+                            "vi": "Người thuyết trình đã điều chỉnh bài nói của mình để kết nối tốt hơn với khán giả mục tiêu là những chuyên gia trẻ."
+                        }
+                    ]
+                }
+            ]
+        },
+        "wide range of": {
+            "phonetic": "/waɪd reɪndʒ ʌv/",
+            "meanings": [
+                {
+                    "type": "Adj + Noun",
+                    "meaning": "một loạt các",
+                    "examples": [
+                        {
+                            "en": "Our company offers a wide range of services, including consulting and market research.",
+                            "vi": "Công ty chúng tôi cung cấp một loạt các dịch vụ, bao gồm tư vấn và nghiên cứu thị trường."
+                        },
+                        {
+                            "en": "The bookstore has a wide range of books, from fiction to business guides.",
+                            "vi": "Hiệu sách có một loạt các loại sách, từ tiểu thuyết đến cẩm nang kinh doanh."
+                        }
+                    ]
+                }
+            ]
+        },
+        "perfectly normal": {
+            "phonetic": "/ˈpɜːrfɪktli ˈnɔːrməl/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "hoàn toàn bình thường",
+                    "examples": [
+                        {
+                            "en": "Feeling a bit nervous before a job interview is perfectly normal for anyone.",
+                            "vi": "Cảm thấy hơi lo lắng trước một buổi phỏng vấn xin việc là hoàn toàn bình thường đối với bất kỳ ai."
+                        },
+                        {
+                            "en": "The manager assured him that working overtime occasionally is perfectly normal in busy periods.",
+                            "vi": "Người quản lý đảm bảo với anh ấy rằng làm thêm giờ thỉnh thoảng là hoàn toàn bình thường trong những giai đoạn bận rộn."
+                        }
+                    ]
+                }
+            ]
+        },
+        "readily available": {
+            "phonetic": "/ˈredɪli əˈveɪləbəl/",
+            "meanings": [
+                {
+                    "type": "Adv + Adj",
+                    "meaning": "có sẵn sàng",
+                    "examples": [
+                        {
+                            "en": "Customer service representatives are readily available to answer your questions during business hours.",
+                            "vi": "Các đại diện dịch vụ khách hàng có sẵn sàng để trả lời câu hỏi của bạn trong giờ làm việc."
+                        },
+                        {
+                            "en": "High-speed internet access is readily available in all rooms at the hotel.",
+                            "vi": "Truy cập internet tốc độ cao có sẵn sàng trong tất cả các phòng tại khách sạn."
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
