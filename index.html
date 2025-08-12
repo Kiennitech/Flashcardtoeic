@@ -292,7 +292,6 @@
                 sortedKeys.unshift(reviewCategoryKey);
             }
             
-            // Add the SRS Review button
             const reviewBtn = document.createElement('button');
             reviewBtn.textContent = reviewCategory.name;
             reviewBtn.dataset.key = reviewCategory.key;
@@ -338,9 +337,8 @@
                 btn.classList.toggle('active', btn.dataset.key === key);
             });
 
-            // Show/hide appropriate controls
             ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
-            ui.srsControls.classList.add('hidden'); // Hide SRS buttons until card is flipped
+            ui.srsControls.classList.add('hidden');
 
             displayCard();
         }
@@ -350,7 +348,6 @@
                 ui.flashcard.classList.remove('is-flipped');
             }
             
-            // Hide SRS controls when showing a new card front
             if (!isReviewMode) {
                 ui.navigationControls.style.display = 'flex';
             }
@@ -360,14 +357,15 @@
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
             ui.deleteBtn.style.display = isManualReviewCategory ? 'flex' : 'none';
 
+            // *** BUG FIX: Moved updateNavigation() inside setTimeout ***
             setTimeout(() => { 
-                if (currentWords.length === 0) {
+                if (currentWords.length === 0 || currentIndex >= currentWords.length) {
                     const message = isReviewMode ? "Chúc mừng! Bạn đã hoàn thành tất cả các từ cần ôn tập hôm nay." : "Chủ đề này chưa có từ nào.";
                     ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">${message}</p>`;
                     ui.cardBackContent.innerHTML = '';
                     ui.reviewBtn.style.display = 'none';
                     ui.deleteBtn.style.display = 'none';
-                    updateNavigation();
+                    updateNavigation(); // Update counter for empty state
                     return;
                 }
                 const wordKey = currentWords[currentIndex];
@@ -375,6 +373,7 @@
                 
                 if (!cardData) { 
                     ui.cardFrontContent.innerHTML = `<p class="text-xl text-red-500">Lỗi: Không tìm thấy dữ liệu từ.</p>`; 
+                    updateNavigation(); // Update counter even on error
                     return; 
                 }
 
@@ -410,9 +409,8 @@
                 
                 attachAudioListeners(ui.cardBackContent);
                 updateReviewButtonState();
+                updateNavigation(); // Update counter after content is ready
             }, 150);
-
-            updateNavigation();
         }
 
         function handleSrsAnswer(rating) {
@@ -421,23 +419,20 @@
             const wordKey = currentWords[currentIndex];
             updateSrsProgress(wordKey, rating);
 
-            // Move to the next card in the review queue
             currentIndex++;
             if (currentIndex >= currentWords.length) {
-                // End of review session
                 ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Chúc mừng! Bạn đã hoàn thành phiên ôn tập.</p>`;
                 ui.cardBackContent.innerHTML = '';
                 ui.srsControls.classList.add('hidden');
-                createCategoryButtons(); // Refresh counts
+                createCategoryButtons();
             } else {
                 displayCard();
             }
             updateNavigation();
         }
         
-        // ... (rest of the functions like playAudio, etc. remain the same)
-        // Note: I'll copy the necessary functions from the previous version.
-        speechSynth.onvoiceschanged=()=>{if(!voicesLoaded){availableVoices=speechSynth.getVoices();voicesLoaded=true}};async function geminiFetch(e,t,o=3,i=1e3){if(!API_KEY)return console.warn("Gemini API Key is missing. Falling back to browser TTS."),null;const n=`https://generativelanguage.googleapis.com/v1beta/models/${e}:generateContent?key=${API_KEY}`;for(let e=0;e<o;e++){try{const o=await fetch(n,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(t)});if(!o.ok){if(400===o.status)return showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn."),null;throw new Error(`HTTP error! status: ${o.status}`)}return await o.json()}catch(t){if(console.error(`API call attempt ${e+1} failed:`,t),e===o-1)return showErrorModal(`Không thể kết nối tới Gemini API sau ${o} lần thử. ${t.message}`),null;await new Promise(e=>setTimeout(e,i*Math.pow(2,e)))}}}function base64ToArrayBuffer(e){const t=window.atob(e),o=t.length,i=new Uint8Array(o);for(let e=0;e<o;e++)i[e]=t.charCodeAt(e);return i.buffer}function pcmToWav(e,t){const o=1,i=2,n=2,s=t*n,a=e.byteLength,r=new ArrayBuffer(44+a),l=new DataView(r);!function(e,t,o){for(let i=0;i<o.length;i++)e.setUint8(t+i,o.charCodeAt(i))}(l,0,"RIFF"),l.setUint32(4,36+a,!0),l.setUint32(24,t,!0),l.setUint32(28,s,!0),l.setUint16(32,n,!0),l.setUint16(34,16,!0),l.setUint32(40,a,!0);const d=new Int16Array(e);for(let e=0;e<d.length;e++)l.setInt16(44+2*e,d[e],!0);return new Blob([l],{type:"audio/wav"})}function playBrowserAudio(e,t){const o=new SpeechSynthesisUtterance(e);o.lang="en-US";const i=t.innerHTML;t.innerHTML=loadingIconSVG,t.disabled=!0;const n=()=>{t.innerHTML=i,t.disabled=!1};o.onend=n,o.onerror=e=>{console.error("SpeechSynthesis Error:",e),n()};const s=()=>{const e=availableVoices.find(e=>"Google US English"===e.name)||availableVoices.find(e=>"en-US"===e.lang);e&&(o.voice=e),speechSynth.speak(o)};voicesLoaded?s():speechSynth.onvoiceschanged=()=>{voicesLoaded||(availableVoices=speechSynth.getVoices(),voicesLoaded=!0,t.disabled&&s())}}async function playAudio(e,t){if(e){if(speechSynth.speaking)return void speechSynth.cancel();if(currentApiAudio)return void currentApiAudio.pause();if(!API_KEY)return void playBrowserAudio(e,t);const o=t.innerHTML;t.innerHTML=loadingIconSVG,t.disabled=!0;try{const i={contents:[{parts:[{text:e}]}],generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:VOICE_NAME}}}},model:TTS_MODEL},n=await geminiFetch(TTS_MODEL,i);if(!n)return void playBrowserAudio(e,t);const s=n?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data,a=n?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;if(!s||!a||!a.startsWith("audio/"))throw new Error("Invalid audio data received.");const r=parseInt(a.match(/rate=(\d+)/)[1],10),l=base64ToArrayBuffer(s),d=pcmToWav(l,r),c=URL.createObjectURL(d),u=new Audio(c),p=()=>{t.innerHTML=o,t.disabled=!1,URL.revokeObjectURL(c),currentApiAudio=null};currentApiAudio=u,u.onended=p,u.onpause=p,u.onerror=()=>{p(),showErrorModal("Lỗi khi phát file âm thanh.")},u.play()}catch(i){console.error("Error playing Gemini audio:",i),t.innerHTML=o,t.disabled=!1,playBrowserAudio(e,t)}}}async function playAudioSequence(e){for(const t of e){const o=t.dataset.textToSpeak;if(o){if(await new Promise(e=>{playAudio(o,t);const i=setInterval(()=>{t.disabled&&!isPlaying||(clearInterval(i),e())},100)}),!isPlaying)break}}}function findWordData(e){for(const t in vocabularyData){if("Chưa ghi nhớ"!==t&&vocabularyData[t][e])return vocabularyData[t][e]}return null}function updateReviewButtonState(){if(!currentWords||0===currentWords.length||"Chưa ghi nhớ"===currentCategoryKey)return void ui.reviewBtn.classList.remove("is-marked");const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];ui.reviewBtn.classList.toggle("is-marked",t)}function handleReviewClick(){if(!currentWords||0===currentWords.length)return;const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];t?delete vocabularyData["Chưa ghi nhớ"][e]:(wordData=findWordData(e))&&(vocabularyData["Chưa ghi nhớ"]||(vocabularyData["Chưa ghi nhớ"]={}),vocabularyData["Chưa ghi nhớ"][e]={...wordData}),saveDataToLocalStorage(),createCategoryButtons(),updateReviewButtonState()}function handleDeleteFromReview(){if("Chưa ghi nhớ"!==currentCategoryKey||0===currentWords.length)return;const e=currentWords[currentIndex];delete vocabularyData["Chưa ghi nhớ"][e],saveDataToLocalStorage(),currentWords.splice(currentIndex,1),currentIndex>=currentWords.length&&(currentIndex=Math.max(0,currentWords.length-1)),createCategoryButtons(),displayCard()}function updateNavigation(){const e=currentWords.length>0,t=currentWords.length>1,o=isPlaying||!e;ui.prevBtn.disabled=o||!t,ui.nextBtn.disabled=o||!t,ui.playPauseBtn.disabled=!e,ui.playSpeedInput.disabled=isPlaying,ui.autoFlipToggle.disabled=o,ui.autoPlayAudioToggle.disabled=o,ui.autoPlayExamplesToggle.disabled=o}function navigate(e){currentWords.length>0&&(currentIndex=(currentIndex+e+currentWords.length)%currentWords.length,displayCard())}function stopAutoplay(){isPlaying&&(isPlaying=!1,clearTimeout(flipTimeout),clearInterval(autoplayInterval),flipTimeout=null,autoplayInterval=null,speechSynth.speaking&&speechSynth.cancel(),currentApiAudio&&currentApiAudio.pause(),ui.playPauseBtn.innerHTML=playIconSVG,document.querySelectorAll(".category-button").forEach(e=>e.disabled=!1),ui.flashcard.style.pointerEvents="auto",updateNavigation())}function startAutoplay(){0!==currentWords.length?(isPlaying=!0,ui.playPauseBtn.innerHTML=pauseIconSVG,document.querySelectorAll(".category-button").forEach(e=>e.disabled=!0),ui.flashcard.style.pointerEvents="none",updateNavigation(),runAutoplayCycle()):showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.")}async function runAutoplayCycle(){if(isPlaying){if(ui.flashcard.classList.contains("is-flipped")&&(ui.flashcard.classList.remove("is-flipped"),await new Promise(e=>setTimeout(e,350))),displayCard(),await new Promise(e=>setTimeout(e,200)),!isPlaying)return;const e=ui.autoFlipToggle.checked,t=ui.autoPlayAudioToggle.checked,o=ui.autoPlayExamplesToggle.checked;let i=1e3*parseInt(ui.playSpeedInput.value,10);if(await new Promise(t=>setTimeout(t,e?i/2:i)),!isPlaying)return;if(e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200)),isPlaying&&(t||o))){const e=currentWords[currentIndex],i=[];if(t){const t=ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${e}"]`);t&&i.push(t)}if(o){const t=ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${e}"])`);t.length>0&&i.push(t[0])}await playAudioSequence(i)}if(isPlaying&&await new Promise(e=>setTimeout(e,i/2)),!isPlaying)return;navigate(1),runAutoplayCycle()}}function showErrorModal(e){ui.errorMessage.textContent=e,ui.errorModal.classList.remove("hidden")}
+        // --- Helper & Utility Functions ---
+        speechSynth.onvoiceschanged=()=>{if(!voicesLoaded){availableVoices=speechSynth.getVoices();voicesLoaded=true}};async function geminiFetch(e,t,o=3,i=1e3){if(!API_KEY)return console.warn("Gemini API Key is missing. Falling back to browser TTS."),null;const n=`https://generativelanguage.googleapis.com/v1beta/models/${e}:generateContent?key=${API_KEY}`;for(let e=0;e<o;e++){try{const o=await fetch(n,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(t)});if(!o.ok){if(400===o.status)return showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn."),null;throw new Error(`HTTP error! status: ${o.status}`)}return await o.json()}catch(t){if(console.error(`API call attempt ${e+1} failed:`,t),e===o-1)return showErrorModal(`Không thể kết nối tới Gemini API sau ${o} lần thử. ${t.message}`),null;await new Promise(e=>setTimeout(e,i*Math.pow(2,e)))}}}function base64ToArrayBuffer(e){const t=window.atob(e),o=t.length,i=new Uint8Array(o);for(let e=0;e<o;e++)i[e]=t.charCodeAt(e);return i.buffer}function pcmToWav(e,t){const o=1,i=2,n=2,s=t*n,a=e.byteLength,r=new ArrayBuffer(44+a),l=new DataView(r);(function(e,t,o){for(let i=0;i<o.length;i++)e.setUint8(t+i,o.charCodeAt(i))})(l,0,"RIFF"),l.setUint32(4,36+a,!0),l.setUint32(24,t,!0),l.setUint32(28,s,!0),l.setUint16(32,n,!0),l.setUint16(34,16,!0),l.setUint32(40,a,!0);const d=new Int16Array(e);for(let e=0;e<d.length;e++)l.setInt16(44+2*e,d[e],!0);return new Blob([l],{type:"audio/wav"})}function playBrowserAudio(e,t){const o=new SpeechSynthesisUtterance(e);o.lang="en-US";const i=t.innerHTML;t.innerHTML=loadingIconSVG,t.disabled=!0;const n=()=>{t.innerHTML=i,t.disabled=!1};o.onend=n,o.onerror=e=>{console.error("SpeechSynthesis Error:",e),n()};const s=()=>{const e=availableVoices.find(e=>"Google US English"===e.name)||availableVoices.find(e=>"en-US"===e.lang);e&&(o.voice=e),speechSynth.speak(o)};voicesLoaded?s():speechSynth.onvoiceschanged=()=>{voicesLoaded||(availableVoices=speechSynth.getVoices(),voicesLoaded=!0,t.disabled&&s())}}async function playAudio(e,t){if(e){if(speechSynth.speaking)return void speechSynth.cancel();if(currentApiAudio)return void currentApiAudio.pause();if(!API_KEY)return void playBrowserAudio(e,t);const o=t.innerHTML;t.innerHTML=loadingIconSVG,t.disabled=!0;try{const i={contents:[{parts:[{text:e}]}],generationConfig:{responseModalities:["AUDIO"],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:VOICE_NAME}}}},model:TTS_MODEL},n=await geminiFetch(TTS_MODEL,i);if(!n)return void playBrowserAudio(e,t);const s=n?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data,a=n?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;if(!s||!a||!a.startsWith("audio/"))throw new Error("Invalid audio data received.");const r=parseInt(a.match(/rate=(\d+)/)[1],10),l=base64ToArrayBuffer(s),d=pcmToWav(l,r),c=URL.createObjectURL(d),u=new Audio(c),p=()=>{t.innerHTML=o,t.disabled=!1,URL.revokeObjectURL(c),currentApiAudio=null};currentApiAudio=u,u.onended=p,u.onpause=p,u.onerror=()=>{p(),showErrorModal("Lỗi khi phát file âm thanh.")},u.play()}catch(i){console.error("Error playing Gemini audio:",i),t.innerHTML=o,t.disabled=!1,playBrowserAudio(e,t)}}}async function playAudioSequence(e){for(const t of e){const o=t.dataset.textToSpeak;if(o){if(await new Promise(e=>{playAudio(o,t);const i=setInterval(()=>{t.disabled&&!isPlaying||(clearInterval(i),e())},100)}),!isPlaying)break}}}function findWordData(e){for(const t in vocabularyData){if("Chưa ghi nhớ"!==t&&vocabularyData[t][e])return vocabularyData[t][e]}return null}function updateReviewButtonState(){if(!currentWords||0===currentWords.length||"Chưa ghi nhớ"===currentCategoryKey)return void ui.reviewBtn.classList.remove("is-marked");const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];ui.reviewBtn.classList.toggle("is-marked",t)}function handleReviewClick(){if(!currentWords||0===currentWords.length)return;const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];t?delete vocabularyData["Chưa ghi nhớ"][e]:(wordData=findWordData(e))&&(vocabularyData["Chưa ghi nhớ"]||(vocabularyData["Chưa ghi nhớ"]={}),vocabularyData["Chưa ghi nhớ"][e]={...wordData}),saveDataToLocalStorage(),createCategoryButtons(),updateReviewButtonState()}function handleDeleteFromReview(){if("Chưa ghi nhớ"!==currentCategoryKey||0===currentWords.length)return;const e=currentWords[currentIndex];delete vocabularyData["Chưa ghi nhớ"][e],saveDataToLocalStorage(),currentWords.splice(currentIndex,1),currentIndex>=currentWords.length&&(currentIndex=Math.max(0,currentWords.length-1)),createCategoryButtons(),displayCard()}function updateNavigation(){const e=currentWords.length>0,t=currentWords.length>1;ui.cardCounter.textContent=e?`${currentIndex+1}/${currentWords.length}`:"0 / 0";const o=isPlaying||!e;ui.prevBtn.disabled=o||!t,ui.nextBtn.disabled=o||!t,ui.playPauseBtn.disabled=!e,ui.playSpeedInput.disabled=isPlaying,ui.autoFlipToggle.disabled=o,ui.autoPlayAudioToggle.disabled=o,ui.autoPlayExamplesToggle.disabled=o}function navigate(e){currentWords.length>0&&(currentIndex=(currentIndex+e+currentWords.length)%currentWords.length,displayCard())}function stopAutoplay(){isPlaying&&(isPlaying=!1,clearTimeout(flipTimeout),clearInterval(autoplayInterval),flipTimeout=null,autoplayInterval=null,speechSynth.speaking&&speechSynth.cancel(),currentApiAudio&&currentApiAudio.pause(),ui.playPauseBtn.innerHTML=playIconSVG,document.querySelectorAll(".category-button").forEach(e=>e.disabled=!1),ui.flashcard.style.pointerEvents="auto",updateNavigation())}function startAutoplay(){0!==currentWords.length?(isPlaying=!0,ui.playPauseBtn.innerHTML=pauseIconSVG,document.querySelectorAll(".category-button").forEach(e=>e.disabled=!0),ui.flashcard.style.pointerEvents="none",updateNavigation(),runAutoplayCycle()):showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.")}async function runAutoplayCycle(){if(isPlaying){if(ui.flashcard.classList.contains("is-flipped")&&(ui.flashcard.classList.remove("is-flipped"),await new Promise(e=>setTimeout(e,350))),displayCard(),await new Promise(e=>setTimeout(e,200)),!isPlaying)return;const e=ui.autoFlipToggle.checked,t=ui.autoPlayAudioToggle.checked,o=ui.autoPlayExamplesToggle.checked;let i=1e3*parseInt(ui.playSpeedInput.value,10);if(await new Promise(t=>setTimeout(t,e?i/2:i)),!isPlaying)return;if(e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200)),isPlaying&&(t||o))){const e=currentWords[currentIndex],i=[];if(t){const t=ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${e}"]`);t&&i.push(t)}if(o){const t=ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${e}"])`);t.length>0&&i.push(t[0])}await playAudioSequence(i)}if(isPlaying&&await new Promise(e=>setTimeout(e,i/2)),!isPlaying)return;navigate(1),runAutoplayCycle()}}function showErrorModal(e){ui.errorMessage.textContent=e,ui.errorModal.classList.remove("hidden")}
 
         function initializeApp(data) {
             vocabularyData = data;
