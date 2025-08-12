@@ -308,9 +308,6 @@
             ui.categorySelect.value = key; 
             updateNavigation(); 
             
-            ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
-            ui.srsControls.classList.add('hidden');
-
             displayCard();
         }
 
@@ -319,10 +316,9 @@
                 ui.flashcard.classList.remove('is-flipped');
             }
             
-            if (!isReviewMode) {
-                ui.navigationControls.style.display = 'flex';
-            }
-            ui.srsControls.classList.add('hidden');
+            ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
+            ui.srsControls.classList.toggle('hidden', !isReviewMode);
+            ui.srsControls.classList.toggle('flex', isReviewMode);
 
             const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
@@ -335,6 +331,7 @@
                     ui.cardBackContent.innerHTML = '';
                     ui.reviewBtn.style.display = 'none';
                     ui.deleteBtn.style.display = 'none';
+                    if(isReviewMode) ui.srsControls.classList.add('hidden');
                     updateNavigation();
                     return;
                 }
@@ -383,9 +380,18 @@
             }, 150);
         }
 
-        function handleSrsAnswer(rating) {
+        async function handleSrsAnswer(rating) {
             if (!isReviewMode || currentWords.length === 0) return;
             
+            // Disable buttons to prevent multiple clicks
+            document.querySelectorAll('.srs-btn').forEach(btn => btn.disabled = true);
+
+            // Flip the card to show the answer
+            ui.flashcard.classList.add('is-flipped');
+
+            // Wait for 2.5 seconds for the user to review the answer
+            await new Promise(resolve => setTimeout(resolve, 2500));
+
             const wordKey = currentWords[currentIndex];
             updateSrsProgress(wordKey, rating);
 
@@ -399,197 +405,42 @@
                 displayCard();
             }
             updateNavigation();
+            
+            // Re-enable buttons for the next card
+            document.querySelectorAll('.srs-btn').forEach(btn => btn.disabled = false);
         }
         
         // --- Helper & Utility Functions ---
-        // *** FULL AUDIO FUNCTIONS RESTORED ***
+        // *** RESTORED FULL AUDIO FUNCTIONS ***
         speechSynth.onvoiceschanged = () => {
             if (!voicesLoaded) {
                 availableVoices = speechSynth.getVoices();
                 voicesLoaded = true;
             }
         };
-
         async function geminiFetch(model, payload, retries = 3, delay = 1000) {
-            if (!API_KEY) {
-                console.warn("Gemini API Key is missing. Falling back to browser TTS.");
-                return null;
-            }
+            if (!API_KEY) { console.warn("Gemini API Key is missing. Falling back to browser TTS."); return null; }
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
             for (let i = 0; i < retries; i++) {
                 try {
-                    const response = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     if (!response.ok) {
-                         if(response.status === 400) {
-                            showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn.");
-                            return null;
-                         }
-                         throw new Error(`HTTP error! status: ${response.status}`);
+                        if (response.status === 400) { showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn."); return null; }
+                        throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return await response.json();
                 } catch (error) {
                     console.error(`API call attempt ${i + 1} failed:`, error);
-                    if (i === retries - 1) {
-                        showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử. ${error.message}`);
-                        return null;
-                    }
+                    if (i === retries - 1) { showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử. ${error.message}`); return null; }
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                 }
             }
         }
-        
-        function base64ToArrayBuffer(base64) {
-            const binaryString = window.atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i);
-            return bytes.buffer;
-        }
-
-        function pcmToWav(pcmData, sampleRate) {
-            const numChannels = 1, bytesPerSample = 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign, dataSize = pcmData.byteLength, buffer = new ArrayBuffer(44 + dataSize), view = new DataView(buffer);
-            function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); }
-            writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE'); writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true); view.setUint16(32, blockAlign, true); view.setUint16(34, 16, true); writeString(view, 36, 'data'); view.setUint32(40, dataSize, true);
-            const pcm16 = new Int16Array(pcmData);
-            for (let i = 0; i < pcm16.length; i++) view.setInt16(44 + i * 2, pcm16[i], true);
-            return new Blob([view], { type: 'audio/wav' });
-        }
-        
-        function playBrowserAudio(text, buttonEl) {
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-
-            const originalContent = buttonEl.innerHTML;
-            buttonEl.innerHTML = loadingIconSVG;
-            buttonEl.disabled = true;
-
-            const cleanup = () => {
-                buttonEl.innerHTML = originalContent;
-                buttonEl.disabled = false;
-            };
-
-            utterance.onend = cleanup;
-            utterance.onerror = (e) => {
-                console.error("SpeechSynthesis Error:", e);
-                cleanup();
-            };
-
-            const setVoiceAndSpeak = () => {
-                const englishVoice = availableVoices.find(voice => voice.name === 'Google US English') || availableVoices.find(voice => voice.lang === 'en-US');
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
-                speechSynth.speak(utterance);
-            };
-
-            if (voicesLoaded) {
-                setVoiceAndSpeak();
-            } else {
-                speechSynth.onvoiceschanged = () => {
-                    if (!voicesLoaded) {
-                        availableVoices = speechSynth.getVoices();
-                        voicesLoaded = true;
-                        if (buttonEl.disabled) {
-                            setVoiceAndSpeak();
-                        }
-                    }
-                };
-            }
-        }
-
-        async function playAudio(text, buttonEl) {
-            if (!text) return;
-
-            if (speechSynth.speaking) {
-                speechSynth.cancel();
-                return;
-            }
-            if (currentApiAudio) {
-                currentApiAudio.pause();
-                return;
-            }
-            
-            if (!API_KEY) {
-                playBrowserAudio(text, buttonEl);
-                return;
-            }
-            
-            const originalContent = buttonEl.innerHTML;
-            buttonEl.innerHTML = loadingIconSVG;
-            buttonEl.disabled = true;
-
-            try {
-                const payload = { 
-                    contents: [{ parts: [{ text }] }], 
-                    generationConfig: { 
-                        responseModalities: ["AUDIO"], 
-                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } } 
-                    }, 
-                    model: TTS_MODEL 
-                };
-                const result = await geminiFetch(TTS_MODEL, payload);
-                if (!result) { 
-                    playBrowserAudio(text, buttonEl);
-                    return;
-                }
-                const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
-                const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;
-                if (!audioData || !mimeType || !mimeType.startsWith("audio/")) throw new Error("Invalid audio data received.");
-                
-                const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
-                const pcmData = base64ToArrayBuffer(audioData);
-                const wavBlob = pcmToWav(pcmData, sampleRate);
-                const audioUrl = URL.createObjectURL(wavBlob);
-                const audio = new Audio(audioUrl);
-                
-                const cleanup = () => {
-                    buttonEl.innerHTML = originalContent;
-                    buttonEl.disabled = false;
-                    URL.revokeObjectURL(audioUrl);
-                    currentApiAudio = null;
-                };
-
-                currentApiAudio = audio;
-                
-                audio.onended = cleanup;
-                audio.onpause = cleanup; 
-                audio.onerror = () => {
-                    cleanup();
-                    showErrorModal("Lỗi khi phát file âm thanh.");
-                };
-
-                audio.play();
-
-            } catch (error) {
-                console.error("Error playing Gemini audio:", error);
-                buttonEl.innerHTML = originalContent;
-                buttonEl.disabled = false;
-                playBrowserAudio(text, buttonEl); 
-            }
-        }
-        
-        async function playAudioSequence(buttons) {
-            for (const btn of buttons) {
-                const text = btn.dataset.textToSpeak;
-                if (text) {
-                    await new Promise(resolve => {
-                        playAudio(text, btn);
-                        const checkEnd = setInterval(() => {
-                            if (!btn.disabled || !isPlaying) {
-                                clearInterval(checkEnd);
-                                resolve();
-                            }
-                        }, 100);
-                    });
-                     if (!isPlaying) break;
-                }
-            }
-        }
-        
+        function base64ToArrayBuffer(base64) { const binaryString = window.atob(base64); const len = binaryString.length; const bytes = new Uint8Array(len); for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i); return bytes.buffer; }
+        function pcmToWav(pcmData, sampleRate) { const numChannels = 1, bytesPerSample = 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign, dataSize = pcmData.byteLength, buffer = new ArrayBuffer(44 + dataSize), view = new DataView(buffer); function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); } writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE'); writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true); view.setUint16(32, blockAlign, true); view.setUint16(34, 16, true); writeString(view, 36, 'data'); view.setUint32(40, dataSize, true); const pcm16 = new Int16Array(pcmData); for (let i = 0; i < pcm16.length; i++) view.setInt16(44 + i * 2, pcm16[i], true); return new Blob([view], { type: 'audio/wav' }); }
+        function playBrowserAudio(text, buttonEl) { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'en-US'; const originalContent = buttonEl.innerHTML; buttonEl.innerHTML = loadingIconSVG; buttonEl.disabled = true; const cleanup = () => { buttonEl.innerHTML = originalContent; buttonEl.disabled = false; }; utterance.onend = cleanup; utterance.onerror = (e) => { console.error("SpeechSynthesis Error:", e); cleanup(); }; const setVoiceAndSpeak = () => { const englishVoice = availableVoices.find(voice => voice.name === 'Google US English') || availableVoices.find(voice => voice.lang === 'en-US'); if (englishVoice) { utterance.voice = englishVoice; } speechSynth.speak(utterance); }; if (voicesLoaded) { setVoiceAndSpeak(); } else { speechSynth.onvoiceschanged = () => { if (!voicesLoaded) { availableVoices = speechSynth.getVoices(); voicesLoaded = true; if (buttonEl.disabled) { setVoiceAndSpeak(); } } }; } }
+        async function playAudio(text, buttonEl) { if (!text) return; if (speechSynth.speaking) { speechSynth.cancel(); return; } if (currentApiAudio) { currentApiAudio.pause(); return; } if (!API_KEY) { playBrowserAudio(text, buttonEl); return; } const originalContent = buttonEl.innerHTML; buttonEl.innerHTML = loadingIconSVG; buttonEl.disabled = true; try { const payload = { contents: [{ parts: [{ text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } } }, model: TTS_MODEL }; const result = await geminiFetch(TTS_MODEL, payload); if (!result) { playBrowserAudio(text, buttonEl); return; } const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data; const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType; if (!audioData || !mimeType || !mimeType.startsWith("audio/")) throw new Error("Invalid audio data received."); const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10); const pcmData = base64ToArrayBuffer(audioData); const wavBlob = pcmToWav(pcmData, sampleRate); const audioUrl = URL.createObjectURL(wavBlob); const audio = new Audio(audioUrl); const cleanup = () => { buttonEl.innerHTML = originalContent; buttonEl.disabled = false; URL.revokeObjectURL(audioUrl); currentApiAudio = null; }; currentApiAudio = audio; audio.onended = cleanup; audio.onpause = cleanup; audio.onerror = () => { cleanup(); showErrorModal("Lỗi khi phát file âm thanh."); }; audio.play(); } catch (error) { console.error("Error playing Gemini audio:", error); buttonEl.innerHTML = originalContent; buttonEl.disabled = false; playBrowserAudio(text, buttonEl); } }
+        async function playAudioSequence(buttons) { for (const btn of buttons) { const text = btn.dataset.textToSpeak; if (text) { await new Promise(resolve => { playAudio(text, btn); const checkEnd = setInterval(() => { if (!btn.disabled || !isPlaying) { clearInterval(checkEnd); resolve(); } }, 100); }); if (!isPlaying) break; } } }
         function findWordData(e){for(const t in vocabularyData){if("Chưa ghi nhớ"!==t&&vocabularyData[t][e])return vocabularyData[t][e]}return null}function updateReviewButtonState(){if(!currentWords||0===currentWords.length||"Chưa ghi nhớ"===currentCategoryKey)return void ui.reviewBtn.classList.remove("is-marked");const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];ui.reviewBtn.classList.toggle("is-marked",t)}function handleReviewClick(){if(!currentWords||0===currentWords.length)return;const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];t?delete vocabularyData["Chưa ghi nhớ"][e]:(wordData=findWordData(e))&&(vocabularyData["Chưa ghi nhớ"]||(vocabularyData["Chưa ghi nhớ"]={}),vocabularyData["Chưa ghi nhớ"][e]={...wordData}),saveDataToLocalStorage(),createCategoryDropdown(),updateReviewButtonState()}function handleDeleteFromReview(){if("Chưa ghi nhớ"!==currentCategoryKey||0===currentWords.length)return;const e=currentWords[currentIndex];delete vocabularyData["Chưa ghi nhớ"][e],saveDataToLocalStorage(),currentWords.splice(currentIndex,1),currentIndex>=currentWords.length&&(currentIndex=Math.max(0,currentWords.length-1)),createCategoryDropdown(),displayCard()}function updateNavigation(){const e=currentWords.length>0,t=currentWords.length>1;ui.cardCounter.textContent=e?`${currentIndex+1}/${currentWords.length}`:"0 / 0";const o=isPlaying||!e;ui.prevBtn.disabled=o||!t,ui.nextBtn.disabled=o||!t,ui.playPauseBtn.disabled=!e,ui.playSpeedInput.disabled=isPlaying||ui.autoPlayAudioToggle.checked||ui.autoPlayExamplesToggle.checked,ui.autoFlipToggle.disabled=o,ui.autoPlayAudioToggle.disabled=o,ui.autoPlayExamplesToggle.disabled=o}function navigate(e){currentWords.length>0&&(currentIndex=(currentIndex+e+currentWords.length)%currentWords.length,displayCard())}function stopAutoplay(){isPlaying&&(isPlaying=!1,clearTimeout(autoplayInterval),autoplayInterval=null,speechSynth.speaking&&speechSynth.cancel(),currentApiAudio&&currentApiAudio.pause(),ui.playPauseBtn.innerHTML=playIconSVG,ui.flashcard.style.pointerEvents="auto",updateNavigation())}function startAutoplay(){0!==currentWords.length?(isPlaying=!0,ui.playPauseBtn.innerHTML=pauseIconSVG,ui.flashcard.style.pointerEvents="none",updateNavigation(),runAutoplayCycle()):showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.")}async function runAutoplayCycle(){if(!isPlaying)return;if(ui.flashcard.classList.contains("is-flipped")&&(ui.flashcard.classList.remove("is-flipped"),await new Promise(e=>setTimeout(e,350))),displayCard(),await new Promise(e=>setTimeout(e,200)),!isPlaying)return;const e=ui.autoFlipToggle.checked,t=ui.autoPlayAudioToggle.checked,o=ui.autoPlayExamplesToggle.checked,i=t||o;if(i){if(e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200))),!isPlaying)return;const n=currentWords[currentIndex],s=[];if(t){const e=ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${n}"]`);e&&s.push(e)}if(o){const e=ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${n}"])`);e.length>0&&s.push(e[0])}await playAudioSequence(s)}else{let t=1e3*parseInt(ui.playSpeedInput.value,10);if(await new Promise(e=>setTimeout(e,e?t/2:t)),!isPlaying)return;e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200))),isPlaying&&await new Promise(e=>setTimeout(e,t/2))}if(!isPlaying)return;navigate(1),runAutoplayCycle()}function showErrorModal(e){ui.errorMessage.textContent=e,ui.errorModal.classList.remove("hidden")}
 
         function initializeApp(data) {
@@ -624,14 +475,8 @@
 
             ui.flashcard.addEventListener('click', (e) => {
                 if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) return;
-                if (currentWords.length > 0) {
+                if (currentWords.length > 0 && !isReviewMode) { // Only allow click-to-flip in normal mode
                     ui.flashcard.classList.toggle('is-flipped');
-                    if (isReviewMode && ui.flashcard.classList.contains('is-flipped')) {
-                        ui.srsControls.classList.remove('hidden');
-                        ui.srsControls.classList.add('flex');
-                    } else {
-                        ui.srsControls.classList.add('hidden');
-                    }
                 }
             });
 
