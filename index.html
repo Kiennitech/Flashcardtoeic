@@ -70,9 +70,12 @@
             </div>
             
             <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-4">
-                 <button data-rating="hard" class="srs-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1">Khó</button>
-                 <button data-rating="good" class="srs-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1">Bình thường</button>
-                 <button data-rating="easy" class="srs-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1">Dễ</button>
+                 <button id="srs-show-answer-btn" class="srs-btn animated-button px-6 py-3 bg-sky-600 text-white rounded-xl flex-1">Xem đáp án</button>
+                 <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-4">
+                    <button data-rating="hard" class="srs-rating-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1">Khó</button>
+                    <button data-rating="good" class="srs-rating-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1">Bình thường</button>
+                    <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1">Dễ</button>
+                 </div>
             </div>
 
             <div class="p-3 bg-white rounded-2xl shadow-inner-sm flex flex-wrap items-center justify-center gap-3 w-full max-w-xl mx-auto border border-slate-200">
@@ -148,6 +151,8 @@
             cardBackContent: document.getElementById('card-back-content'),
             navigationControls: document.getElementById('navigation-controls'),
             srsControls: document.getElementById('srs-controls'),
+            srsShowAnswerBtn: document.getElementById('srs-show-answer-btn'),
+            srsRatingGroup: document.getElementById('srs-rating-group'),
             prevBtn: document.getElementById('prev-btn'),
             nextBtn: document.getElementById('next-btn'),
             cardCounter: document.getElementById('card-counter'),
@@ -319,6 +324,9 @@
             ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
             ui.srsControls.classList.toggle('hidden', !isReviewMode);
             ui.srsControls.classList.toggle('flex', isReviewMode);
+            ui.srsShowAnswerBtn.classList.remove('hidden');
+            ui.srsRatingGroup.classList.add('hidden');
+            ui.srsRatingGroup.classList.remove('flex');
 
             const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
@@ -380,18 +388,9 @@
             }, 150);
         }
 
-        async function handleSrsAnswer(rating) {
+        function handleSrsAnswer(rating) {
             if (!isReviewMode || currentWords.length === 0) return;
             
-            // Disable buttons to prevent multiple clicks
-            document.querySelectorAll('.srs-btn').forEach(btn => btn.disabled = true);
-
-            // Flip the card to show the answer
-            ui.flashcard.classList.add('is-flipped');
-
-            // Wait for 2.5 seconds for the user to review the answer
-            await new Promise(resolve => setTimeout(resolve, 2500));
-
             const wordKey = currentWords[currentIndex];
             updateSrsProgress(wordKey, rating);
 
@@ -405,13 +404,9 @@
                 displayCard();
             }
             updateNavigation();
-            
-            // Re-enable buttons for the next card
-            document.querySelectorAll('.srs-btn').forEach(btn => btn.disabled = false);
         }
         
         // --- Helper & Utility Functions ---
-        // *** RESTORED FULL AUDIO FUNCTIONS ***
         speechSynth.onvoiceschanged = () => {
             if (!voicesLoaded) {
                 availableVoices = speechSynth.getVoices();
@@ -475,7 +470,7 @@
 
             ui.flashcard.addEventListener('click', (e) => {
                 if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) return;
-                if (currentWords.length > 0 && !isReviewMode) { // Only allow click-to-flip in normal mode
+                if (currentWords.length > 0 && !isReviewMode) {
                     ui.flashcard.classList.toggle('is-flipped');
                 }
             });
@@ -485,7 +480,16 @@
             ui.deleteBtn.addEventListener('click', handleDeleteFromReview);
             ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden'));
             
-            document.querySelectorAll('.srs-btn').forEach(btn => {
+            ui.srsShowAnswerBtn.addEventListener('click', () => {
+                if (!ui.flashcard.classList.contains('is-flipped')) {
+                    ui.flashcard.classList.add('is-flipped');
+                    ui.srsShowAnswerBtn.classList.add('hidden');
+                    ui.srsRatingGroup.classList.remove('hidden');
+                    ui.srsRatingGroup.classList.add('flex');
+                }
+            });
+
+            document.querySelectorAll('.srs-rating-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     handleSrsAnswer(e.target.dataset.rating);
                 });
