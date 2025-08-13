@@ -17,7 +17,21 @@
         .flashcard-container { perspective: 1200px; }
         .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
         .flashcard.is-flipped { transform: rotateY(-180deg); }
-        .flashcard-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; border-radius: 1.5rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.1); padding: 1.5rem; border: 1px solid rgba(0,0,0,0.05); }
+        .flashcard-face { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            backface-visibility: hidden; 
+            -webkit-backface-visibility: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            border-radius: 1.75rem; /* Smoother radius */
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* Stronger shadow */
+            padding: 2rem; /* More padding */
+            border: 1px solid rgba(0,0,0,0.05); 
+        }
         .flashcard-front { background-color: white; color: #111827; }
         .flashcard-back { background-color: #f8fafc; color: #0f172a; transform: rotateY(-180deg); overflow-y: auto; justify-content: flex-start; }
         .animated-button { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
@@ -526,6 +540,12 @@
             ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
             ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
 
+            if (isReviewMode) {
+                ui.autoFlipToggle.checked = false;
+                ui.autoFlipToggle.disabled = true;
+            } else {
+                ui.autoFlipToggle.disabled = false;
+            }
 
             const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
@@ -839,7 +859,7 @@
         function updateReviewButtonState() { if (!currentWords || currentWords.length === 0 || currentCategoryKey === "Chưa ghi nhớ") { ui.reviewBtn.classList.remove("is-marked"); return; } const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); ui.reviewBtn.classList.toggle("is-marked", isMarked); }
         function handleReviewClick() { if (!currentWords || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); if (isMarked) { delete vocabularyData["Chưa ghi nhớ"][wordKey]; } else { const wordData = findWordData(wordKey); if (wordData) { if (!vocabularyData["Chưa ghi nhớ"]) { vocabularyData["Chưa ghi nhớ"] = {}; } vocabularyData["Chưa ghi nhớ"][wordKey] = { ...wordData }; } } saveDataToLocalStorage(); createCategoryDropdown(); updateReviewButtonState(); }
         function handleDeleteFromReview() { if (currentCategoryKey !== "Chưa ghi nhớ" || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; delete vocabularyData["Chưa ghi nhớ"][wordKey]; saveDataToLocalStorage(); currentWords.splice(currentIndex, 1); if (currentIndex >= currentWords.length) { currentIndex = Math.max(0, currentWords.length - 1); } createCategoryDropdown(); displayCard(); }
-        function updateNavigation() { const hasWords = currentWords.length > 0; const hasMultipleWords = currentWords.length > 1; ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0"; const isDisabled = isPlaying || !hasWords; ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0; ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1; ui.playPauseBtn.disabled = !hasWords; ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked; ui.autoFlipToggle.disabled = isDisabled; ui.autoPlayAudioToggle.disabled = isDisabled; ui.autoPlayExamplesToggle.disabled = isDisabled; }
+        function updateNavigation() { const hasWords = currentWords.length > 0; const hasMultipleWords = currentWords.length > 1; ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0"; const isDisabled = isPlaying || !hasWords; ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0; ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1; ui.playPauseBtn.disabled = !hasWords; ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked; ui.autoFlipToggle.disabled = isPlaying || isReviewMode; ui.autoPlayAudioToggle.disabled = isDisabled; ui.autoPlayExamplesToggle.disabled = isDisabled; }
         function navigate(direction) { if (currentWords.length > 0) { const newIndex = currentIndex + direction; if (newIndex >= 0 && newIndex < currentWords.length) { currentIndex = newIndex; displayCard(); } } }
         function stopAutoplay() { if (isPlaying) { isPlaying = false; clearTimeout(autoplayInterval); autoplayInterval = null; if (speechSynth.speaking) { speechSynth.cancel(); } if (activeAudioElement) { activeAudioElement.pause(); } ui.playPauseBtn.innerHTML = playIconSVG; ui.flashcard.style.pointerEvents = "auto"; updateNavigation(); } }
         function startAutoplay() { if (currentWords.length > 0) { isPlaying = true; ui.playPauseBtn.innerHTML = pauseIconSVG; ui.flashcard.style.pointerEvents = "none"; updateNavigation(); runAutoplayCycle(); } else { showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu."); } }
