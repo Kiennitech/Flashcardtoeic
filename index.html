@@ -103,9 +103,10 @@
             
             <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-2">
                  <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-2">
-                    <button data-rating="hard" class="srs-rating-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1">Khó</button>
-                    <button data-rating="good" class="srs-rating-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1">Bình thường</button>
-                    <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1">Dễ</button>
+                    <!-- CHANGE: Added justify-center to each button -->
+                    <button data-rating="hard" class="srs-rating-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1 flex justify-center">Khó</button>
+                    <button data-rating="good" class="srs-rating-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 flex justify-center">Bình thường</button>
+                    <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1 flex justify-center">Dễ</button>
                  </div>
                  <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
@@ -270,9 +271,10 @@
         const loadingIconSVG = `<div class="loader"></div>`;
 
         // --- GEMINI API CONFIG ---
-        const API_KEY = ""; // IMPORTANT: Add your Gemini API Key here
+        // CHANGE: Added API Key and changed voice to a female one.
+        const API_KEY = "AIzaSyArL11WIWq1Me2ScsMNTMknlMnsHzbsq6Q";
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        const VOICE_NAME = "Puck"; // Example voice, choose from available voices
+        const VOICE_NAME = "Leda"; // A pleasant female voice
 
         // --- CORE FUNCTIONS ---
 
@@ -820,7 +822,7 @@
         }
 
         /**
-         * [FIXED] Converts raw PCM audio data into a playable WAV blob.
+         * Converts raw PCM audio data into a playable WAV blob.
          * @param {ArrayBuffer} pcmData - The raw PCM data.
          * @param {number} sampleRate - The audio sample rate (e.g., 24000).
          * @returns {Blob} A blob containing the WAV audio data.
@@ -907,7 +909,7 @@
         }
 
         /**
-         * [FIXED] Main function to play audio, preferring Gemini TTS and falling back to browser TTS.
+         * Main function to play audio, preferring Gemini TTS and falling back to browser TTS.
          * @param {string} text The text to speak.
          * @param {HTMLElement} buttonEl The button element that triggered the audio.
          */
@@ -956,7 +958,6 @@
                     throw new Error("Invalid audio data received from API.");
                 }
                 
-                // --- FIX: Convert raw PCM to WAV before decoding ---
                 const sampleRateMatch = mimeType.match(/rate=(\d+)/);
                 const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
 
@@ -964,7 +965,6 @@
                 const wavBlob = pcmToWav(pcmData, sampleRate);
                 const wavArrayBuffer = await wavBlob.arrayBuffer();
                 const audioBuffer = await audioContext.decodeAudioData(wavArrayBuffer);
-                // --- END FIX ---
                 
                 const source = audioContext.createBufferSource();
                 source.buffer = audioBuffer;
