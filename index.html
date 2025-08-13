@@ -103,9 +103,10 @@
             
             <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-2">
                  <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-2">
-                    <button data-rating="hard" class="srs-rating-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1 flex justify-center">Khó</button>
-                    <button data-rating="good" class="srs-rating-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 flex justify-center">Bình thường</button>
-                    <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1 flex justify-center">Dễ</button>
+                    <!-- CHANGE: Added w-0 and responsive padding to fix button sizing on iOS -->
+                    <button data-rating="hard" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-red-500 text-white rounded-xl flex-1 w-0 flex justify-center">Khó</button>
+                    <button data-rating="good" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 w-0 flex justify-center">Bình thường</button>
+                    <button data-rating="easy" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-green-500 text-white rounded-xl flex-1 w-0 flex justify-center">Dễ</button>
                  </div>
                  <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
@@ -621,7 +622,6 @@
 
         function updateNavigation() {
             const hasWords = currentWords.length > 0;
-            // CHANGE: Simplified the logic for disabling buttons, as looping is now default
             ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0";
             const isDisabled = isPlaying || !hasWords;
             ui.prevBtn.disabled = isDisabled;
@@ -731,18 +731,29 @@
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
 
+            // --- CHANGE: Enhanced voice selection logic for iOS and other platforms ---
             const preferredVoices = [
-                'Samantha', 'Google US English', 'Alex', 'Daniel'
+                'Siri',             // Prioritize Siri voices on Apple devices
+                'Samantha',         // High-quality iOS voice
+                'Google US English',// High-quality voice on Chrome/Android
+                'Alex',             // Another high-quality voice on Apple devices
+                'Daniel'            // High-quality UK voice often available
             ];
 
             let selectedVoice = null;
+
+            // Find the first preferred voice that contains the keyword
             for (const voiceName of preferredVoices) {
-                selectedVoice = availableVoices.find(voice => voice.name === voiceName && voice.lang.startsWith('en-'));
+                selectedVoice = availableVoices.find(voice => voice.name.includes(voiceName) && voice.lang.startsWith('en-'));
                 if (selectedVoice) break;
             }
+
+            // If no preferred voice is found, fall back to the best available local en-US voice
             if (!selectedVoice) {
                 selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US') && voice.localService);
             }
+            
+            // As a last resort, take any en-US voice
             if (!selectedVoice) {
                 selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US'));
             }
@@ -750,6 +761,7 @@
             if (selectedVoice) {
                 utterance.voice = selectedVoice;
             }
+            // --- END CHANGE ---
 
             const originalContent = buttonEl.innerHTML;
             buttonEl.innerHTML = loadingIconSVG;
@@ -762,8 +774,8 @@
 
             utterance.onend = cleanup;
             utterance.onerror = (e) => {
-                // CHANGE: Ignore "interrupted" error which occurs when user stops autoplay.
-                if (e.error === 'interrupted') {
+                // CHANGE: Ignore "interrupted" and "canceled" errors which are expected when the user stops autoplay.
+                if (e.error === 'interrupted' || e.error === 'canceled') {
                     cleanup();
                     return;
                 }
@@ -782,7 +794,7 @@
         
         async function playAudioSequence(buttons) {
             for (const btn of buttons) {
-                if (!isPlaying) break; // Check if user stopped during the sequence
+                if (!isPlaying) break;
                 const text = btn.dataset.textToSpeak;
                 if (text) {
                     await new Promise(resolve => {
@@ -856,15 +868,14 @@
             updateNavigation();
         }
         
-        // CHANGE: Modified navigate function to loop around.
         function navigate(direction) {
-            if (currentWords.length > 1) { // Only loop if there's more than one card
+            if (currentWords.length > 1) {
                 let newIndex = currentIndex + direction;
                 if (newIndex >= currentWords.length) {
-                    newIndex = 0; // Loop to the beginning
+                    newIndex = 0;
                 }
                 if (newIndex < 0) {
-                    newIndex = currentWords.length - 1; // Loop to the end
+                    newIndex = currentWords.length - 1;
                 }
                 currentIndex = newIndex;
                 displayCard();
@@ -897,7 +908,6 @@
             }
         }
 
-        // CHANGE: Modified autoplay cycle to loop instead of stopping.
         async function runAutoplayCycle() { 
             if (!isPlaying) return; 
             
@@ -905,7 +915,6 @@
                 ui.flashcard.classList.remove("is-flipped");
                 await new Promise(r => setTimeout(r, 350));
             } 
-            // displayCard() is now called inside navigate()
             if (!isPlaying) return; 
             
             const shouldFlip = ui.autoFlipToggle.checked; 
@@ -943,8 +952,8 @@
             } 
             
             if (!isPlaying) return; 
-            navigate(1); // This now loops
-            autoplayInterval = setTimeout(runAutoplayCycle, 300); // Add a small delay before next cycle
+            navigate(1);
+            autoplayInterval = setTimeout(runAutoplayCycle, 300);
         }
 
         function shuffleCurrentQueue() {
