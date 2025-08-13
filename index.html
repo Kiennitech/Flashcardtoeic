@@ -31,7 +31,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-left: 8px; }
         
-        #progress-matrix-modal.hidden { display: none; }
+        .modal.hidden { display: none; }
         .progress-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(16px, 1fr));
@@ -147,7 +147,7 @@
         </footer>
     </div>
     
-    <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+    <div id="error-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
             <h3 id="error-title" class="text-lg font-bold text-red-600 mb-2">Đã xảy ra lỗi</h3>
             <p id="error-message" class="text-slate-600 mb-4">Không thể thực hiện yêu cầu. Vui lòng thử lại.</p>
@@ -155,23 +155,37 @@
         </div>
     </div>
 
-    <div id="progress-matrix-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+    <div id="progress-matrix-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-2xl shadow-xl p-6 max-w-4xl w-full max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-slate-800">Tiến độ học tập</h3>
                 <button id="close-progress-matrix-btn" class="text-slate-500 hover:text-slate-800">&times;</button>
             </div>
-            <div class="flex items-center justify-center gap-4 text-xs mb-4">
-                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-slate-300"></div><span>Chưa học</span></div>
-                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-red-500"></div><span>Khó</span></div>
-                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-blue-500"></div><span>Bình thường</span></div>
-                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-green-500"></div><span>Dễ</span></div>
+            <div id="progress-stats" class="grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-4 text-xs mb-4">
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-slate-300"></div><span>Chưa học (<span id="stats-unstudied-count">0</span> - <span id="stats-unstudied-percent">0%</span>)</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-red-500"></div><span>Khó (<span id="stats-hard-count">0</span> - <span id="stats-hard-percent">0%</span>)</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-blue-500"></div><span>Bình thường (<span id="stats-good-count">0</span> - <span id="stats-good-percent">0%</span>)</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-green-500"></div><span>Dễ (<span id="stats-easy-count">0</span> - <span id="stats-easy-percent">0%</span>)</span></div>
             </div>
             <div id="progress-grid-container" class="progress-grid overflow-y-auto p-2 bg-slate-100 rounded-lg">
+            </div>
+            <div class="mt-4 pt-4 border-t border-slate-200">
+                <button id="reset-progress-btn" class="w-full bg-red-100 text-red-700 px-4 py-2 rounded-lg hover:bg-red-200 transition-colors">Xóa toàn bộ tiến trình học tập</button>
             </div>
         </div>
     </div>
     
+    <div id="confirm-modal" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
+            <h3 id="confirm-title" class="text-lg font-bold text-slate-800 mb-2">Xác nhận</h3>
+            <p id="confirm-message" class="text-slate-600 mb-4">Bạn có chắc chắn muốn thực hiện hành động này không?</p>
+            <div class="flex justify-end gap-3">
+                <button id="cancel-btn" class="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300">Hủy</button>
+                <button id="confirm-btn" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
     <div id="toast-notification"></div>
 
     <script>
@@ -231,6 +245,21 @@
             progressGridContainer: document.getElementById('progress-grid-container'),
             shuffleBtn: document.getElementById('shuffle-btn'),
             toast: document.getElementById('toast-notification'),
+            resetProgressBtn: document.getElementById('reset-progress-btn'),
+            confirmModal: document.getElementById('confirm-modal'),
+            confirmTitle: document.getElementById('confirm-title'),
+            confirmMessage: document.getElementById('confirm-message'),
+            confirmBtn: document.getElementById('confirm-btn'),
+            cancelBtn: document.getElementById('cancel-btn'),
+            // Stats UI
+            statsUnstudiedCount: document.getElementById('stats-unstudied-count'),
+            statsUnstudiedPercent: document.getElementById('stats-unstudied-percent'),
+            statsHardCount: document.getElementById('stats-hard-count'),
+            statsHardPercent: document.getElementById('stats-hard-percent'),
+            statsGoodCount: document.getElementById('stats-good-count'),
+            statsGoodPercent: document.getElementById('stats-good-percent'),
+            statsEasyCount: document.getElementById('stats-easy-count'),
+            statsEasyPercent: document.getElementById('stats-easy-percent'),
         };
         
         const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg><span>Phát</span>`;
@@ -258,7 +287,7 @@
         }
 
         function updateSrsProgress(wordKey, rating) {
-            let progress = getSrsProgress(wordKey);
+            let progress = srsProgressData.hasOwnProperty(wordKey) ? srsProgressData[wordKey] : { level: 1 };
             let currentLevel = progress.level;
 
             if (rating === 'hard') {
@@ -287,8 +316,12 @@
             for (const category in vocabularyData) {
                 if (category === "Chưa ghi nhớ") continue;
                 for (const wordKey in vocabularyData[category]) {
-                    const progress = getSrsProgress(wordKey);
-                    if (new Date(progress.nextReviewDate) <= today) {
+                    if (srsProgressData.hasOwnProperty(wordKey)) {
+                        const progress = srsProgressData[wordKey];
+                        if (new Date(progress.nextReviewDate) <= today) {
+                            queue.push(wordKey);
+                        }
+                    } else {
                         queue.push(wordKey);
                     }
                 }
@@ -296,7 +329,7 @@
             return queue;
         }
         
-        function updateProgressMatrix() {
+        function updateProgressMatrixAndStats() {
             ui.progressGridContainer.innerHTML = '';
             
             let allWords = [];
@@ -306,6 +339,9 @@
                     allWords.push({ key: wordKey, category: category });
                 }
             }
+
+            const counts = { unstudied: 0, hard: 0, good: 0, easy: 0 };
+            const totalWords = allWords.length;
 
             allWords.forEach(wordInfo => {
                  const dot = document.createElement('div');
@@ -319,11 +355,16 @@
 
                      if (level <= 2) {
                          dotColorClass = 'bg-red-500';
+                         counts.hard++;
                      } else if (level <= 4) {
                          dotColorClass = 'bg-blue-500';
+                         counts.good++;
                      } else {
                          dotColorClass = 'bg-green-500';
+                         counts.easy++;
                      }
+                 } else {
+                    counts.unstudied++;
                  }
                  
                  dot.className = `progress-dot w-4 h-4 rounded-sm ${dotColorClass}`;
@@ -347,6 +388,17 @@
 
                  ui.progressGridContainer.appendChild(dot);
             });
+
+            // Update stats
+            const calcPercent = (count) => totalWords > 0 ? ((count / totalWords) * 100).toFixed(0) : 0;
+            ui.statsUnstudiedCount.textContent = counts.unstudied;
+            ui.statsUnstudiedPercent.textContent = `${calcPercent(counts.unstudied)}%`;
+            ui.statsHardCount.textContent = counts.hard;
+            ui.statsHardPercent.textContent = `${calcPercent(counts.hard)}%`;
+            ui.statsGoodCount.textContent = counts.good;
+            ui.statsGoodPercent.textContent = `${calcPercent(counts.good)}%`;
+            ui.statsEasyCount.textContent = counts.easy;
+            ui.statsEasyPercent.textContent = `${calcPercent(counts.easy)}%`;
         }
 
         function saveDataToLocalStorage() {
@@ -627,7 +679,7 @@
             
             const wordKey = currentWords[currentIndex];
             updateSrsProgress(wordKey, rating);
-            updateProgressMatrix();
+            updateProgressMatrixAndStats();
 
             currentIndex++;
             if (currentIndex >= currentWords.length) {
@@ -840,6 +892,31 @@
             ui.errorModal.classList.remove("hidden"); 
         }
 
+        function showConfirmModal(title, message, onConfirm) {
+            ui.confirmTitle.textContent = title;
+            ui.confirmMessage.textContent = message;
+            ui.confirmModal.classList.remove('hidden');
+
+            const confirmHandler = () => {
+                onConfirm();
+                ui.confirmModal.classList.add('hidden');
+                cleanup();
+            };
+
+            const cancelHandler = () => {
+                ui.confirmModal.classList.add('hidden');
+                cleanup();
+            };
+            
+            const cleanup = () => {
+                ui.confirmBtn.removeEventListener('click', confirmHandler);
+                ui.cancelBtn.removeEventListener('click', cancelHandler);
+            };
+
+            ui.confirmBtn.addEventListener('click', confirmHandler);
+            ui.cancelBtn.addEventListener('click', cancelHandler);
+        }
+
         function shuffleCurrentQueue() {
             if (!isReviewMode || currentWords.length < 2) return;
             for (let i = currentWords.length - 1; i > 0; i--) {
@@ -863,6 +940,25 @@
             }
             
             displayCard();
+        }
+
+        function resetAllProgress() {
+            showConfirmModal(
+                "Xác nhận xóa tiến trình",
+                "Bạn có chắc chắn muốn xóa toàn bộ tiến trình học tập không? Hành động này không thể hoàn tác.",
+                () => {
+                    srsProgressData = {};
+                    localStorage.removeItem(SRS_PROGRESS_KEY);
+                    clearReviewSession();
+                    updateProgressMatrixAndStats();
+                    showToast("Đã xóa toàn bộ tiến trình học tập.");
+                    // Reset view to the first category
+                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
+                    if (firstCategory) {
+                        selectCategory(firstCategory);
+                    }
+                }
+            );
         }
 
         function initializeApp(data) {
@@ -917,7 +1013,7 @@
             ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden'));
             
             ui.progressMatrixBtn.addEventListener('click', () => {
-                updateProgressMatrix();
+                updateProgressMatrixAndStats();
                 ui.progressMatrixModal.classList.remove('hidden');
             });
             ui.closeProgressMatrixBtn.addEventListener('click', () => {
@@ -930,6 +1026,7 @@
             });
 
             ui.shuffleBtn.addEventListener('click', shuffleCurrentQueue);
+            ui.resetProgressBtn.addEventListener('click', resetAllProgress);
 
             document.querySelectorAll('.srs-rating-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
