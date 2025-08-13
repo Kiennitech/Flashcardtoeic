@@ -11,7 +11,7 @@
     <style>
         html, body { height: 100%; overflow-x: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; padding-top: 1rem; padding-bottom: 1rem; }
-        /* **NEW**: Style to lock body scroll when a modal is open */
+        /* Style to lock body scroll when a modal is open */
         body.modal-open {
             overflow: hidden;
         }
@@ -84,7 +84,7 @@
                     <svg class="unmarked-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                     <svg class="marked-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="#ef4444" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                 </button>
-                <button id="delete-btn" class="card-action-btn animated-button" title="Xóa khỏi danh sách 'Chưa ghi nhớ'">
+                <button id="delete-btn" class="card-action-btn animated-button" title="Xóa khỏi danh sách 'Chưa ghi nhớ'" style="right: 70px;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                 </button>
             </div>
@@ -163,7 +163,7 @@
         <div class="bg-white rounded-2xl shadow-xl p-6 max-w-4xl w-full max-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold text-slate-800">Tiến độ học tập</h3>
-                <button id="close-progress-matrix-btn" class="text-slate-500 hover:text-slate-800">&times;</button>
+                <button id="close-progress-matrix-btn" class="text-slate-500 hover:text-slate-800 text-3xl leading-none">&times;</button>
             </div>
             <div id="progress-stats" class="grid grid-cols-2 md:grid-cols-4 items-center justify-center gap-4 text-xs mb-4">
                 <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-slate-300"></div><span>Chưa học (<span id="stats-unstudied-count">0</span> - <span id="stats-unstudied-percent">0%</span>)</span></div>
@@ -193,6 +193,7 @@
     <div id="toast-notification"></div>
 
     <script>
+        // --- CONSTANTS AND STATE VARIABLES ---
         const SRS_PROGRESS_KEY = "toeicSrsProgressData";
         const REVIEW_LIST_KEY = "toeicReviewListData";
         const REVIEW_SESSION_KEY = "toeicReviewSession";
@@ -211,13 +212,14 @@
         let isReviewMode = false;
         let lastCompletedSessionWords = [];
         
+        // Audio related state
         let speechSynth = window.speechSynthesis;
         let availableVoices = [];
         let voicesLoaded = false;
-        
         let audioContext;
         let activeAudioSource = null;
 
+        // --- UI ELEMENT REFERENCES ---
         const ui = {
             flashcard: document.getElementById('flashcard'),
             cardFrontContent: document.getElementById('card-front-content'),
@@ -267,10 +269,17 @@
         const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
         const loadingIconSVG = `<div class="loader"></div>`;
 
-        const API_KEY = "";
+        // --- GEMINI API CONFIG ---
+        const API_KEY = ""; // IMPORTANT: Add your Gemini API Key here
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        const VOICE_NAME = "Puck";
+        const VOICE_NAME = "Puck"; // Example voice, choose from available voices
 
+        // --- CORE FUNCTIONS ---
+
+        /**
+         * Initializes or resumes the AudioContext. This is required by browsers
+         * to allow audio playback after a user interaction.
+         */
         function unlockAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -280,10 +289,37 @@
             }
         }
         
+        /**
+         * Finds the complete data for a word from the main vocabulary object.
+         * @param {string} wordKey The word to find.
+         * @returns {object|null} The word data object or null if not found.
+         */
+        function findWordData(wordKey) {
+            for (const category in vocabularyData) {
+                // Search in all categories except the manual review list
+                if (category !== "Chưa ghi nhớ" && vocabularyData[category][wordKey]) {
+                    return vocabularyData[category][wordKey];
+                }
+            }
+            return null; // Return null if not found
+        }
+
+        // --- SRS (Spaced Repetition System) LOGIC ---
+
+        /**
+         * Gets the SRS progress for a specific word.
+         * @param {string} wordKey The word to check.
+         * @returns {object} The progress object for the word.
+         */
         function getSrsProgress(wordKey) {
             return srsProgressData[wordKey] || { level: 1, nextReviewDate: new Date().toISOString() };
         }
 
+        /**
+         * Updates the SRS progress for a word based on user rating.
+         * @param {string} wordKey The word being rated.
+         * @param {string} rating The rating ('hard', 'good', 'easy').
+         */
         function updateSrsProgress(wordKey, rating) {
             let progress = srsProgressData.hasOwnProperty(wordKey) ? srsProgressData[wordKey] : { level: 1 };
             let currentLevel = progress.level;
@@ -291,7 +327,7 @@
             if (rating === 'hard') {
                 currentLevel = 1;
             } else if (rating === 'good') {
-                // No change
+                // No change in level, just reschedule
             } else if (rating === 'easy') {
                 currentLevel = Math.min(MAX_SRS_LEVEL, currentLevel + 1);
             }
@@ -307,12 +343,16 @@
             saveSrsProgress();
         }
 
+        /**
+         * Gets a list of all words due for review today.
+         * @returns {string[]} An array of word keys.
+         */
         function getReviewQueue() {
             const today = new Date();
-            today.setHours(23, 59, 59, 999);
+            today.setHours(23, 59, 59, 999); // Set to end of today
             let queue = [];
             for (const category in vocabularyData) {
-                if (category === "Chưa ghi nhớ") continue;
+                if (category === "Chưa ghi nhớ") continue; // Skip manual review list
                 for (const wordKey in vocabularyData[category]) {
                     if (srsProgressData.hasOwnProperty(wordKey)) {
                         const progress = srsProgressData[wordKey];
@@ -320,89 +360,24 @@
                             queue.push(wordKey);
                         }
                     } else {
+                        // New words are always due for review
                         queue.push(wordKey);
                     }
                 }
             }
             return queue;
         }
-        
-        function updateProgressMatrixAndStats() {
-            ui.progressGridContainer.innerHTML = '';
-            
-            let allWords = [];
-            for (const category in vocabularyData) {
-                if (category === "Chưa ghi nhớ") continue;
-                for (const wordKey in vocabularyData[category]) {
-                    allWords.push({ key: wordKey, category: category });
-                }
-            }
 
-            const counts = { unstudied: 0, hard: 0, good: 0, easy: 0 };
-            const totalWords = allWords.length;
-
-            allWords.forEach(wordInfo => {
-                 const dot = document.createElement('div');
-                 let dotColorClass = 'bg-slate-300';
-                 let dotTitle = `${wordInfo.key} (Chủ đề: ${wordInfo.category})`;
-
-                 if (srsProgressData.hasOwnProperty(wordInfo.key)) {
-                     const progress = srsProgressData[wordInfo.key];
-                     const level = progress.level;
-                     dotTitle += ` - Level: ${level}`;
-
-                     if (level <= 2) {
-                         dotColorClass = 'bg-red-500';
-                         counts.hard++;
-                     } else if (level <= 4) {
-                         dotColorClass = 'bg-blue-500';
-                         counts.good++;
-                     } else {
-                         dotColorClass = 'bg-green-500';
-                         counts.easy++;
-                     }
-                 } else {
-                    counts.unstudied++;
-                 }
-                 
-                 dot.className = `progress-dot w-4 h-4 rounded-sm ${dotColorClass}`;
-                 dot.title = dotTitle;
-                 dot.dataset.wordKey = wordInfo.key;
-                 dot.dataset.category = wordInfo.category;
-
-                 dot.addEventListener('click', () => {
-                    const wordCategory = dot.dataset.category;
-                    const wordKey = dot.dataset.wordKey;
-                    
-                    const wordIndex = Object.keys(vocabularyData[wordCategory]).indexOf(wordKey);
-
-                    if (wordIndex !== -1) {
-                        selectCategory(wordCategory);
-                        currentIndex = wordIndex;
-                        displayCard();
-                        ui.progressMatrixModal.classList.add('hidden');
-                    }
-                 });
-
-                 ui.progressGridContainer.appendChild(dot);
-            });
-
-            const calcPercent = (count) => totalWords > 0 ? ((count / totalWords) * 100).toFixed(0) : 0;
-            ui.statsUnstudiedCount.textContent = counts.unstudied;
-            ui.statsUnstudiedPercent.textContent = `${calcPercent(counts.unstudied)}%`;
-            ui.statsHardCount.textContent = counts.hard;
-            ui.statsHardPercent.textContent = `${calcPercent(counts.hard)}%`;
-            ui.statsGoodCount.textContent = counts.good;
-            ui.statsGoodPercent.textContent = `${calcPercent(counts.good)}%`;
-            ui.statsEasyCount.textContent = counts.easy;
-            ui.statsEasyPercent.textContent = `${calcPercent(counts.easy)}%`;
-        }
+        // --- DATA PERSISTENCE (LocalStorage) ---
 
         function saveDataToLocalStorage() {
             try {
                 const reviewList = vocabularyData["Chưa ghi nhớ"] || {};
                 localStorage.setItem(REVIEW_LIST_KEY, JSON.stringify(reviewList));
-            } catch (e) { console.error("Failed to save review list:", e); }
+            } catch (e) {
+                console.error("Failed to save review list:", e);
+                showErrorModal("Không thể lưu danh sách 'Chưa ghi nhớ'.");
+            }
         }
 
         function loadDataFromLocalStorage() {
@@ -412,14 +387,19 @@
                     const loadedReviewList = JSON.parse(savedData);
                     if (!vocabularyData["Chưa ghi nhớ"]) vocabularyData["Chưa ghi nhớ"] = {};
                     Object.assign(vocabularyData["Chưa ghi nhớ"], loadedReviewList);
-                } catch (e) { console.error("Failed to parse review list:", e); }
+                } catch (e) {
+                    console.error("Failed to parse review list:", e);
+                }
             }
         }
 
         function saveSrsProgress() {
             try {
                 localStorage.setItem(SRS_PROGRESS_KEY, JSON.stringify(srsProgressData));
-            } catch (e) { console.error("Failed to save SRS progress:", e); }
+            } catch (e) {
+                console.error("Failed to save SRS progress:", e);
+                showErrorModal("Không thể lưu tiến trình học tập.");
+            }
         }
 
         function loadSrsProgress() {
@@ -459,6 +439,11 @@
              localStorage.removeItem(REVIEW_SESSION_KEY);
         }
         
+        // --- UI RENDERING AND UPDATES ---
+
+        /**
+         * Populates the category selection dropdown.
+         */
         function createCategoryDropdown() {
             ui.categorySelect.innerHTML = '';
             let categoryKeys = Object.keys(vocabularyData);
@@ -497,6 +482,12 @@
             });
         }
 
+        /**
+         * Selects a category and initializes the flashcard view for it.
+         * @param {string} key The key of the category to select.
+         * @param {string[]} [customWordList=null] An optional custom list of words (used for review mode).
+         * @param {number} [resumeIndex=0] The index to start from (used for resuming sessions).
+         */
         function selectCategory(key, customWordList = null, resumeIndex = 0) {
             stopAutoplay();
             currentCategoryKey = key;
@@ -515,24 +506,28 @@
             displayCard();
         }
 
+        /**
+         * Displays the current flashcard content.
+         */
         function displayCard() {
             if (ui.flashcard.classList.contains('is-flipped')) {
                 ui.flashcard.classList.remove('is-flipped');
             }
             
+            // Toggle visibility of navigation vs SRS controls
             ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
             ui.srsControls.classList.toggle('hidden', !isReviewMode);
             ui.srsControls.classList.toggle('flex', isReviewMode);
-            ui.srsRatingGroup.classList.add('hidden');
+            ui.srsRatingGroup.classList.add('hidden'); // Always hide ratings initially
             ui.srsRatingGroup.classList.remove('flex');
             ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
             ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
-
 
             const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
             ui.deleteBtn.style.display = isManualReviewCategory ? 'flex' : 'none';
 
+            // Delay content update to allow flip animation to start
             setTimeout(() => { 
                 ui.cardFrontContent.innerHTML = '';
                 ui.cardBackContent.innerHTML = '';
@@ -558,11 +553,11 @@
                         ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Chủ đề này chưa có từ nào.</p>`;
                     }
                     
+                    // Hide controls when no card is shown
                     ui.reviewBtn.style.display = 'none';
                     ui.deleteBtn.style.display = 'none';
                     if(isReviewMode) {
                         ui.srsControls.classList.add('hidden');
-                        ui.srsRatingGroup.classList.add('hidden');
                         ui.shuffleBtn.classList.add('hidden');
                     }
                     updateNavigation();
@@ -577,8 +572,10 @@
                     return; 
                 }
 
+                // --- Render Front Card ---
                 ui.cardFrontContent.innerHTML = `<h2 class="text-4xl md:text-5xl font-bold text-center break-words text-slate-800">${wordKey}</h2>`;
                 
+                // --- Render Back Card ---
                 const backContentWrapper = document.createElement('div');
                 backContentWrapper.className = 'p-4 w-full';
 
@@ -671,49 +668,203 @@
             }, 150);
         }
 
-        function handleSrsAnswer(rating) {
-            if (!isReviewMode || currentWords.length === 0) return;
-            
+        /**
+         * Updates the state of the "Mark for Review" button.
+         */
+        function updateReviewButtonState() {
+            if (!currentWords || currentWords.length === 0 || currentCategoryKey === "Chưa ghi nhớ") {
+                ui.reviewBtn.classList.remove("is-marked");
+                return;
+            }
             const wordKey = currentWords[currentIndex];
-            updateSrsProgress(wordKey, rating);
-            updateProgressMatrixAndStats();
-
-            currentIndex++;
-            if (currentIndex >= currentWords.length) {
-                displayCard();
-            } else {
-                displayCard();
-            }
-            updateNavigation();
+            const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]);
+            ui.reviewBtn.classList.toggle("is-marked", isMarked);
         }
-        
-        speechSynth.onvoiceschanged = () => {
-            if (!voicesLoaded) {
-                availableVoices = speechSynth.getVoices();
-                voicesLoaded = true;
+
+        /**
+         * Updates the enabled/disabled state of navigation and control buttons.
+         */
+        function updateNavigation() {
+            const hasWords = currentWords.length > 0;
+            const hasMultipleWords = currentWords.length > 1;
+            ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0";
+            const isDisabled = isPlaying || !hasWords;
+            ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0;
+            ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1;
+            ui.playPauseBtn.disabled = !hasWords;
+            ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked;
+            ui.autoFlipToggle.disabled = isDisabled;
+            ui.autoPlayAudioToggle.disabled = isDisabled;
+            ui.autoPlayExamplesToggle.disabled = isDisabled;
+        }
+
+        /**
+         * Renders the progress matrix and updates statistics.
+         */
+        function updateProgressMatrixAndStats() {
+            ui.progressGridContainer.innerHTML = '';
+            
+            let allWords = [];
+            for (const category in vocabularyData) {
+                if (category === "Chưa ghi nhớ") continue;
+                for (const wordKey in vocabularyData[category]) {
+                    allWords.push({ key: wordKey, category: category });
+                }
             }
-        };
+
+            const counts = { unstudied: 0, hard: 0, good: 0, easy: 0 };
+            const totalWords = allWords.length;
+
+            allWords.forEach(wordInfo => {
+                const dot = document.createElement('div');
+                let dotColorClass = 'bg-slate-300';
+                let dotTitle = `${wordInfo.key} (Chủ đề: ${wordInfo.category})`;
+
+                if (srsProgressData.hasOwnProperty(wordInfo.key)) {
+                    const progress = srsProgressData[wordInfo.key];
+                    const level = progress.level;
+                    dotTitle += ` - Level: ${level}`;
+
+                    if (level <= 2) {
+                        dotColorClass = 'bg-red-500';
+                        counts.hard++;
+                    } else if (level <= 4) {
+                        dotColorClass = 'bg-blue-500';
+                        counts.good++;
+                    } else {
+                        dotColorClass = 'bg-green-500';
+                        counts.easy++;
+                    }
+                } else {
+                    counts.unstudied++;
+                }
+                
+                dot.className = `progress-dot w-4 h-4 rounded-sm ${dotColorClass}`;
+                dot.title = dotTitle;
+                dot.dataset.wordKey = wordInfo.key;
+                dot.dataset.category = wordInfo.category;
+
+                dot.addEventListener('click', () => {
+                    const wordCategory = dot.dataset.category;
+                    const wordKey = dot.dataset.wordKey;
+                    
+                    const wordIndex = Object.keys(vocabularyData[wordCategory]).indexOf(wordKey);
+
+                    if (wordIndex !== -1) {
+                        selectCategory(wordCategory);
+                        currentIndex = wordIndex;
+                        displayCard();
+                        ui.progressMatrixModal.classList.add('hidden');
+                        unlockBodyScroll();
+                    }
+                });
+
+                ui.progressGridContainer.appendChild(dot);
+            });
+
+            const calcPercent = (count) => totalWords > 0 ? ((count / totalWords) * 100).toFixed(0) : 0;
+            ui.statsUnstudiedCount.textContent = counts.unstudied;
+            ui.statsUnstudiedPercent.textContent = `${calcPercent(counts.unstudied)}%`;
+            ui.statsHardCount.textContent = counts.hard;
+            ui.statsHardPercent.textContent = `${calcPercent(counts.hard)}%`;
+            ui.statsGoodCount.textContent = counts.good;
+            ui.statsGoodPercent.textContent = `${calcPercent(counts.good)}%`;
+            ui.statsEasyCount.textContent = counts.easy;
+            ui.statsEasyPercent.textContent = `${calcPercent(counts.easy)}%`;
+        }
+
+        // --- AUDIO PLAYBACK ---
+
+        /**
+         * Fetches TTS audio from Gemini API with retry logic.
+         */
         async function geminiFetch(model, payload, retries = 3, delay = 1000) {
-            if (!API_KEY) { console.warn("Gemini API Key is missing. Falling back to browser TTS."); return null; }
+            if (!API_KEY) {
+                console.warn("Gemini API Key is missing. Falling back to browser TTS.");
+                return null;
+            }
             const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
             for (let i = 0; i < retries; i++) {
                 try {
                     const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     if (!response.ok) {
-                        if (response.status === 400) { showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ."); return null; }
+                        if (response.status === 400) {
+                            showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn.");
+                            return null;
+                        }
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return await response.json();
                 } catch (error) {
                     console.error(`API call attempt ${i + 1} failed:`, error);
-                    if (i === retries - 1) { showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử.`); return null; }
+                    if (i === retries - 1) {
+                        showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử.`);
+                        return null;
+                    }
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                 }
             }
         }
-        function base64ToArrayBuffer(base64) { const binaryString = window.atob(base64); const len = binaryString.length; const bytes = new Uint8Array(len); for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i); return bytes.buffer; }
-        function pcmToWav(pcmData, sampleRate) { const numChannels = 1, bytesPerSample = 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign, dataSize = pcmData.byteLength, buffer = new ArrayBuffer(44 + dataSize), view = new DataView(buffer); function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); } writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE'); writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true); view.setUint16(32, blockAlign, true); view.setUint16(34, 16, true); writeString(view, 36, 'data'); view.setUint32(40, dataSize, true); const pcm16 = new Int16Array(pcmData); for (let i = 0; i < pcm16.length; i++) view.setInt16(44 + i * 2, pcm16[i], true); return new Blob([view], { type: 'audio/wav' }); }
+
+        /**
+         * Converts a base64 string to an ArrayBuffer.
+         */
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        /**
+         * [FIXED] Converts raw PCM audio data into a playable WAV blob.
+         * @param {ArrayBuffer} pcmData - The raw PCM data.
+         * @param {number} sampleRate - The audio sample rate (e.g., 24000).
+         * @returns {Blob} A blob containing the WAV audio data.
+         */
+        function pcmToWav(pcmData, sampleRate) {
+            const numChannels = 1,
+                bytesPerSample = 2, // 16-bit
+                blockAlign = numChannels * bytesPerSample,
+                byteRate = sampleRate * blockAlign,
+                dataSize = pcmData.byteLength,
+                buffer = new ArrayBuffer(44 + dataSize),
+                view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM
+            view.setUint16(22, numChannels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, byteRate, true);
+            view.setUint16(32, blockAlign, true);
+            view.setUint16(34, 16, true); // 16-bit
+            writeString(view, 36, 'data');
+            view.setUint32(40, dataSize, true);
+
+            const pcm16 = new Int16Array(pcmData);
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(44 + i * 2, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
         
+        /**
+         * Plays audio using the browser's built-in SpeechSynthesis API as a fallback.
+         */
         function playBrowserAudio(text, buttonEl) {
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
@@ -747,7 +898,7 @@
                     if (!voicesLoaded) {
                         availableVoices = speechSynth.getVoices();
                         voicesLoaded = true;
-                        if (buttonEl.disabled) {
+                        if (buttonEl.disabled) { // Check if we should still speak
                             setVoiceAndSpeak();
                         }
                     }
@@ -755,10 +906,16 @@
             }
         }
 
+        /**
+         * [FIXED] Main function to play audio, preferring Gemini TTS and falling back to browser TTS.
+         * @param {string} text The text to speak.
+         * @param {HTMLElement} buttonEl The button element that triggered the audio.
+         */
         async function playAudio(text, buttonEl) {
             if (!text || buttonEl.disabled) return;
             unlockAudioContext(); 
 
+            // Stop any currently playing audio
             if (activeAudioSource) {
                 activeAudioSource.stop();
             }
@@ -766,6 +923,7 @@
                 speechSynth.cancel();
             }
 
+            // Fallback immediately if no API key
             if (!API_KEY) {
                 playBrowserAudio(text, buttonEl);
                 return;
@@ -776,18 +934,37 @@
             buttonEl.disabled = true;
 
             try {
-                const payload = { contents: [{ parts: [{ text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } } }, model: TTS_MODEL };
+                const payload = {
+                    contents: [{ parts: [{ text }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } }
+                    },
+                    model: TTS_MODEL
+                };
                 const result = await geminiFetch(TTS_MODEL, payload);
-                if (!result) {
+
+                if (!result) { // geminiFetch failed and showed an error, so fallback
                     playBrowserAudio(text, buttonEl);
                     return;
                 }
+
                 const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
                 const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;
-                if (!audioData || !mimeType || !mimeType.startsWith("audio/")) throw new Error("Invalid audio data received.");
+
+                if (!audioData || !mimeType || !mimeType.startsWith("audio/")) {
+                    throw new Error("Invalid audio data received from API.");
+                }
                 
+                // --- FIX: Convert raw PCM to WAV before decoding ---
+                const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+
                 const pcmData = base64ToArrayBuffer(audioData);
-                const audioBuffer = await audioContext.decodeAudioData(pcmData.buffer);
+                const wavBlob = pcmToWav(pcmData, sampleRate);
+                const wavArrayBuffer = await wavBlob.arrayBuffer();
+                const audioBuffer = await audioContext.decodeAudioData(wavArrayBuffer);
+                // --- END FIX ---
                 
                 const source = audioContext.createBufferSource();
                 source.buffer = audioBuffer;
@@ -805,64 +982,265 @@
                 console.error("Error playing Gemini audio:", error);
                 buttonEl.innerHTML = originalContent;
                 buttonEl.disabled = false;
-                playBrowserAudio(text, buttonEl);
+                playBrowserAudio(text, buttonEl); // Fallback to browser TTS on error
             }
         }
         
+        /**
+         * Plays a sequence of audio clips one after another.
+         * @param {HTMLElement[]} buttons An array of button elements to play audio from.
+         */
         async function playAudioSequence(buttons) {
             for (const btn of buttons) {
                 const text = btn.dataset.textToSpeak;
                 if (text) {
+                    // Wait for the current audio to finish playing
                     await new Promise(resolve => {
                         playAudio(text, btn);
                         const checkEnd = setInterval(() => {
-                            if (!btn.disabled || !isPlaying) {
+                            if (!btn.disabled || !isPlaying) { // Stop if autoplay is cancelled
                                 clearInterval(checkEnd);
                                 resolve();
                             }
                         }, 100);
                     });
-                    if (!isPlaying) break;
+                    if (!isPlaying) break; // Exit loop if user stopped autoplay
                 }
             }
         }
-        function findWordData(wordKey) { for (const category in vocabularyData) { if (category !== "Chưa ghi nhớ" && vocabularyData[category][wordKey]) { return vocabularyData[category][wordKey]; } } return null; }
-        function updateReviewButtonState() { if (!currentWords || currentWords.length === 0 || currentCategoryKey === "Chưa ghi nhớ") { ui.reviewBtn.classList.remove("is-marked"); return; } const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); ui.reviewBtn.classList.toggle("is-marked", isMarked); }
-        function handleReviewClick() { if (!currentWords || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); if (isMarked) { delete vocabularyData["Chưa ghi nhớ"][wordKey]; } else { const wordData = findWordData(wordKey); if (wordData) { if (!vocabularyData["Chưa ghi nhớ"]) { vocabularyData["Chưa ghi nhớ"] = {}; } vocabularyData["Chưa ghi nhớ"][wordKey] = { ...wordData }; } } saveDataToLocalStorage(); createCategoryDropdown(); updateReviewButtonState(); }
-        function handleDeleteFromReview() { if (currentCategoryKey !== "Chưa ghi nhớ" || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; delete vocabularyData["Chưa ghi nhớ"][wordKey]; saveDataToLocalStorage(); currentWords.splice(currentIndex, 1); if (currentIndex >= currentWords.length) { currentIndex = Math.max(0, currentWords.length - 1); } createCategoryDropdown(); displayCard(); }
-        function updateNavigation() { const hasWords = currentWords.length > 0; const hasMultipleWords = currentWords.length > 1; ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0"; const isDisabled = isPlaying || !hasWords; ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0; ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1; ui.playPauseBtn.disabled = !hasWords; ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked; ui.autoFlipToggle.disabled = isDisabled; ui.autoPlayAudioToggle.disabled = isDisabled; ui.autoPlayExamplesToggle.disabled = isDisabled; }
-        function navigate(direction) { if (currentWords.length > 0) { const newIndex = currentIndex + direction; if (newIndex >= 0 && newIndex < currentWords.length) { currentIndex = newIndex; displayCard(); } } }
-        function stopAutoplay() { if (isPlaying) { isPlaying = false; clearTimeout(autoplayInterval); autoplayInterval = null; if (speechSynth.speaking) { speechSynth.cancel(); } if (activeAudioSource) { activeAudioSource.stop(); } ui.playPauseBtn.innerHTML = playIconSVG; ui.flashcard.style.pointerEvents = "auto"; updateNavigation(); } }
-        function startAutoplay() { if (currentWords.length > 0) { isPlaying = true; ui.playPauseBtn.innerHTML = pauseIconSVG; ui.flashcard.style.pointerEvents = "none"; updateNavigation(); runAutoplayCycle(); } else { showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu."); } }
+
+        // --- EVENT HANDLERS & USER ACTIONS ---
+
+        /**
+         * Handles the click on the "Mark for Review" button.
+         */
+        function handleReviewClick() {
+            if (!currentWords || currentWords.length === 0) return;
+            const wordKey = currentWords[currentIndex];
+            const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]);
+
+            if (isMarked) {
+                delete vocabularyData["Chưa ghi nhớ"][wordKey];
+                showToast(`Đã xóa "${wordKey}" khỏi danh sách 'Chưa ghi nhớ'.`);
+            } else {
+                const wordData = findWordData(wordKey);
+                if (wordData) {
+                    if (!vocabularyData["Chưa ghi nhớ"]) {
+                        vocabularyData["Chưa ghi nhớ"] = {};
+                    }
+                    vocabularyData["Chưa ghi nhớ"][wordKey] = { ...wordData };
+                    showToast(`Đã thêm "${wordKey}" vào danh sách 'Chưa ghi nhớ'.`);
+                }
+            }
+            saveDataToLocalStorage();
+            createCategoryDropdown();
+            updateReviewButtonState();
+        }
+
+        /**
+         * Handles deleting a word from the "Chưa ghi nhớ" list.
+         */
+        function handleDeleteFromReview() {
+            if (currentCategoryKey !== "Chưa ghi nhớ" || currentWords.length === 0) return;
+            const wordKey = currentWords[currentIndex];
+            
+            showConfirmModal(
+                "Xác nhận xóa",
+                `Bạn có chắc muốn xóa "${wordKey}" khỏi danh sách này không?`,
+                () => {
+                    delete vocabularyData["Chưa ghi nhớ"][wordKey];
+                    saveDataToLocalStorage();
+                    currentWords.splice(currentIndex, 1);
+                    if (currentIndex >= currentWords.length) {
+                        currentIndex = Math.max(0, currentWords.length - 1);
+                    }
+                    createCategoryDropdown();
+                    displayCard();
+                    showToast(`Đã xóa "${wordKey}".`);
+                }
+            );
+        }
+
+        /**
+         * Handles an answer in SRS review mode.
+         */
+        function handleSrsAnswer(rating) {
+            if (!isReviewMode || currentWords.length === 0) return;
+            
+            const wordKey = currentWords[currentIndex];
+            updateSrsProgress(wordKey, rating);
+            updateProgressMatrixAndStats(); // Update stats immediately
+
+            currentIndex++;
+            displayCard(); // This will handle both moving to the next card and the completion screen
+            updateNavigation();
+        }
+        
+        /**
+         * Navigates to the previous or next card.
+         * @param {number} direction -1 for previous, 1 for next.
+         */
+        function navigate(direction) {
+            if (currentWords.length > 0) {
+                const newIndex = currentIndex + direction;
+                if (newIndex >= 0 && newIndex < currentWords.length) {
+                    currentIndex = newIndex;
+                    displayCard();
+                }
+            }
+        }
+
+        /**
+         * Starts the autoplay slideshow.
+         */
+        function startAutoplay() {
+            if (currentWords.length > 0) {
+                isPlaying = true;
+                ui.playPauseBtn.innerHTML = pauseIconSVG;
+                ui.flashcard.style.pointerEvents = "none"; // Prevent clicks during autoplay
+                updateNavigation();
+                runAutoplayCycle();
+            } else {
+                showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.");
+            }
+        }
+
+        /**
+         * Stops the autoplay slideshow.
+         */
+        function stopAutoplay() {
+            if (isPlaying) {
+                isPlaying = false;
+                clearTimeout(autoplayInterval);
+                autoplayInterval = null;
+                if (speechSynth.speaking) {
+                    speechSynth.cancel();
+                }
+                if (activeAudioSource) {
+                    activeAudioSource.stop();
+                }
+                ui.playPauseBtn.innerHTML = playIconSVG;
+                ui.flashcard.style.pointerEvents = "auto";
+                updateNavigation();
+            }
+        }
+
+        /**
+         * The main loop for the autoplay feature.
+         */
         async function runAutoplayCycle() { 
             if (!isPlaying) return; 
-            if (ui.flashcard.classList.contains("is-flipped")) { ui.flashcard.classList.remove("is-flipped"); await new Promise(r => setTimeout(r, 350)); } 
+            // Reset card to front if it's flipped
+            if (ui.flashcard.classList.contains("is-flipped")) {
+                ui.flashcard.classList.remove("is-flipped");
+                await new Promise(r => setTimeout(r, 350));
+            } 
             displayCard(); 
-            await new Promise(r => setTimeout(r, 200)); 
+            await new Promise(r => setTimeout(r, 200)); // Wait for card content to render
             if (!isPlaying) return; 
+            
             const shouldFlip = ui.autoFlipToggle.checked; 
             const shouldPlayAudio = ui.autoPlayAudioToggle.checked; 
             const shouldPlayExamples = ui.autoPlayExamplesToggle.checked; 
             const isAudioMode = shouldPlayAudio || shouldPlayExamples; 
+
             if (isAudioMode) { 
-                if (shouldFlip) { ui.flashcard.classList.add("is-flipped"); await new Promise(r => setTimeout(r, 200)); } 
+                if (shouldFlip) {
+                    ui.flashcard.classList.add("is-flipped");
+                    await new Promise(r => setTimeout(r, 200));
+                } 
                 if (!isPlaying) return; 
+                
                 const wordKey = currentWords[currentIndex]; 
                 let audioButtonsToPlay = []; 
-                if (shouldPlayAudio) { const mainBtn = ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${wordKey}"]`); if (mainBtn) audioButtonsToPlay.push(mainBtn); } 
-                if (shouldPlayExamples) { const exampleBtns = ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${wordKey}"])`); if (exampleBtns.length > 0) audioButtonsToPlay.push(exampleBtns[0]); } 
+                if (shouldPlayAudio) {
+                    const mainBtn = ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${wordKey}"]`);
+                    if (mainBtn) audioButtonsToPlay.push(mainBtn);
+                } 
+                if (shouldPlayExamples) {
+                    // Play only the first example for simplicity
+                    const exampleBtn = ui.cardBackContent.querySelector(`.play-audio-btn:not([data-text-to-speak="${wordKey}"])`);
+                    if (exampleBtn) audioButtonsToPlay.push(exampleBtn);
+                } 
                 await playAudioSequence(audioButtonsToPlay); 
             } else { 
+                // Manual timing mode
                 let delay = parseInt(ui.playSpeedInput.value, 10) * 1000; 
                 await new Promise(r => setTimeout(r, shouldFlip ? delay / 2 : delay)); 
                 if (!isPlaying) return; 
-                if (shouldFlip) { ui.flashcard.classList.add("is-flipped"); await new Promise(r => setTimeout(r, 200)); } 
+                if (shouldFlip) {
+                    ui.flashcard.classList.add("is-flipped");
+                    await new Promise(r => setTimeout(r, 200));
+                } 
                 if (isPlaying) await new Promise(r => setTimeout(r, delay / 2)); 
             } 
+            
             if (!isPlaying) return; 
-            if (currentIndex < currentWords.length - 1) { navigate(1); runAutoplayCycle(); } else { stopAutoplay(); } 
+            if (currentIndex < currentWords.length - 1) {
+                navigate(1);
+                runAutoplayCycle(); // Recursive call for the next cycle
+            } else {
+                stopAutoplay(); // End of list
+            } 
         }
-        
+
+        /**
+         * Shuffles the words in the current review queue.
+         */
+        function shuffleCurrentQueue() {
+            if (!isReviewMode || currentWords.length < 2) return;
+            // Fisher-Yates shuffle algorithm
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            currentIndex = 0;
+            displayCard();
+            showToast("Đã xáo trộn danh sách ôn tập!");
+        }
+
+        /**
+         * Restarts a completed review session with the same set of words, shuffled.
+         */
+        function restartReviewSession() {
+            if (!isReviewMode || lastCompletedSessionWords.length === 0) return;
+            
+            currentWords = [...lastCompletedSessionWords];
+            currentIndex = 0;
+
+            // Shuffle the words again
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            
+            displayCard();
+        }
+
+        /**
+         * Resets all SRS progress data.
+         */
+        function resetAllProgress() {
+            showConfirmModal(
+                "Xác nhận xóa tiến trình",
+                "Bạn có chắc chắn muốn xóa toàn bộ tiến trình học tập không? Hành động này không thể hoàn tác.",
+                () => {
+                    srsProgressData = {};
+                    localStorage.removeItem(SRS_PROGRESS_KEY);
+                    clearReviewSession();
+                    updateProgressMatrixAndStats();
+                    showToast("Đã xóa toàn bộ tiến trình học tập.");
+                    // Go back to the first available category
+                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
+                    if (firstCategory) {
+                        selectCategory(firstCategory);
+                    }
+                }
+            );
+        }
+
+        // --- MODAL AND TOAST NOTIFICATION ---
+
         function showToast(message) {
             ui.toast.textContent = message;
             ui.toast.classList.add('show');
@@ -886,67 +1264,22 @@
 
             const confirmHandler = () => {
                 onConfirm();
-                ui.confirmModal.classList.add('hidden');
-                unlockBodyScroll();
-                cleanup();
+                closeAndCleanup();
             };
 
             const cancelHandler = () => {
-                ui.confirmModal.classList.add('hidden');
-                unlockBodyScroll();
-                cleanup();
+                closeAndCleanup();
             };
             
-            const cleanup = () => {
+            const closeAndCleanup = () => {
+                ui.confirmModal.classList.add('hidden');
+                unlockBodyScroll();
                 ui.confirmBtn.removeEventListener('click', confirmHandler);
                 ui.cancelBtn.removeEventListener('click', cancelHandler);
             };
 
             ui.confirmBtn.addEventListener('click', confirmHandler);
             ui.cancelBtn.addEventListener('click', cancelHandler);
-        }
-
-        function shuffleCurrentQueue() {
-            if (!isReviewMode || currentWords.length < 2) return;
-            for (let i = currentWords.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
-            }
-            currentIndex = 0;
-            displayCard();
-            showToast("Đã xáo trộn danh sách ôn tập!");
-        }
-
-        function restartReviewSession() {
-            if (!isReviewMode || lastCompletedSessionWords.length === 0) return;
-            
-            currentWords = [...lastCompletedSessionWords];
-            currentIndex = 0;
-
-            for (let i = currentWords.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
-            }
-            
-            displayCard();
-        }
-
-        function resetAllProgress() {
-            showConfirmModal(
-                "Xác nhận xóa tiến trình",
-                "Bạn có chắc chắn muốn xóa toàn bộ tiến trình học tập không? Hành động này không thể hoàn tác.",
-                () => {
-                    srsProgressData = {};
-                    localStorage.removeItem(SRS_PROGRESS_KEY);
-                    clearReviewSession();
-                    updateProgressMatrixAndStats();
-                    showToast("Đã xóa toàn bộ tiến trình học tập.");
-                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
-                    if (firstCategory) {
-                        selectCategory(firstCategory);
-                    }
-                }
-            );
         }
 
         function lockBodyScroll() {
@@ -957,6 +1290,11 @@
             document.body.classList.remove('modal-open');
         }
 
+        // --- INITIALIZATION ---
+
+        /**
+         * Sets up the application, loads data, and attaches event listeners.
+         */
         function initializeApp(data) {
             vocabularyData = data;
             if (!vocabularyData["Chưa ghi nhớ"]) {
@@ -967,27 +1305,35 @@
             ui.playPauseBtn.innerHTML = playIconSVG;
             createCategoryDropdown();
             
+            // --- Event Listeners ---
             ui.prevBtn.addEventListener('click', () => navigate(-1));
             ui.nextBtn.addEventListener('click', () => navigate(1));
             
+            // Swipe gesture handling
             let touchstartX = 0, touchstartY = 0;
             ui.flashcard.addEventListener('touchstart', e => {
                 touchstartX = e.changedTouches[0].screenX;
                 touchstartY = e.changedTouches[0].screenY;
             }, { passive: true });
+
             ui.flashcard.addEventListener('touchend', e => { 
                 const touchendX = e.changedTouches[0].screenX;
                 const touchendY = e.changedTouches[0].screenY;
-                const swipeThreshold = 50;
-                const swipeRestraint = 100;
+                const swipeThreshold = 50; // Minimum horizontal distance for a swipe
+                const swipeRestraint = 100; // Maximum vertical distance allowed
                 const swipedX = touchendX - touchstartX;
                 const swipedY = touchendY - touchstartY;
                 if (Math.abs(swipedX) < swipeThreshold || Math.abs(swipedY) > swipeRestraint) return;
-                if (swipedX < 0 && !ui.nextBtn.disabled) navigate(1);
-                if (swipedX > 0 && !ui.prevBtn.disabled) navigate(-1);
+                
+                if (!isReviewMode) { // Only allow swipe navigation in normal mode
+                    if (swipedX < 0 && !ui.nextBtn.disabled) navigate(1);
+                    if (swipedX > 0 && !ui.prevBtn.disabled) navigate(-1);
+                }
             });
 
+            // Card flip handling
             ui.flashcard.addEventListener('click', (e) => {
+                // Ignore clicks on buttons on the card
                 if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) {
                     return;
                 }
@@ -1020,7 +1366,7 @@
                 unlockBodyScroll();
             });
             ui.progressMatrixModal.addEventListener('click', (e) => {
-                if (e.target === ui.progressMatrixModal) {
+                if (e.target === ui.progressMatrixModal) { // Close if clicking on backdrop
                     ui.progressMatrixModal.classList.add('hidden');
                     unlockBodyScroll();
                 }
@@ -1031,13 +1377,12 @@
 
             document.querySelectorAll('.srs-rating-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
+                    e.stopPropagation(); // Prevent card from flipping back
                     handleSrsAnswer(e.target.dataset.rating);
                 });
             });
 
-            const audioCheckboxes = [ui.autoPlayAudioToggle, ui.autoPlayExamplesToggle];
-            audioCheckboxes.forEach(checkbox => {
+            [ui.autoPlayAudioToggle, ui.autoPlayExamplesToggle].forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
                     ui.playSpeedInput.disabled = ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked;
                 });
@@ -1047,6 +1392,7 @@
                 const selectedKey = e.target.value;
                 if (selectedKey === "SRS_REVIEW_MODE") {
                     let reviewQueue = getReviewQueue();
+                    // Shuffle the review queue
                     for (let i = reviewQueue.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
@@ -1057,18 +1403,22 @@
                 }
             });
 
+            // Determine initial state on load
             const savedSession = loadReviewSession();
             if (savedSession && savedSession.words.length > 0 && savedSession.index < savedSession.words.length) {
+                // Resume a previous review session
                 selectCategory("SRS_REVIEW_MODE", savedSession.words, savedSession.index);
             } else {
                 let reviewQueue = getReviewQueue();
                 if (reviewQueue.length > 0) {
+                    // Start a new review session if there are items due
                     for (let i = reviewQueue.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
                     }
                      selectCategory("SRS_REVIEW_MODE", reviewQueue, 0);
                 } else {
+                    // Otherwise, load the first available category
                     const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
                     if (firstCategory) {
                         selectCategory(firstCategory);
@@ -1080,8 +1430,12 @@
             }
         }
         
+        /**
+         * Fetches vocabulary data and starts the application.
+         */
         async function startApp() {
             try {
+                // You must have a 'vocabulary.json' file in the same directory.
                 const response = await fetch('vocabulary.json');
                 if (!response.ok) {
                     throw new Error(`Không tìm thấy tệp vocabulary.json hoặc có lỗi mạng (status: ${response.status})`);
@@ -1094,8 +1448,10 @@
             }
         }
 
+        // --- APP START ---
         document.addEventListener('DOMContentLoaded', () => {
             startApp();
+            // Add listeners to unlock audio context on first user interaction
             document.body.addEventListener('click', unlockAudioContext, { once: true });
             document.body.addEventListener('touchend', unlockAudioContext, { once: true });
         });
