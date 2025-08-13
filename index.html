@@ -30,6 +30,35 @@
         .play-audio-btn.playing svg { color: #0ea5e9; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; margin-left: 8px; }
+        
+        #progress-matrix-modal.hidden { display: none; }
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(16px, 1fr));
+            gap: 4px;
+        }
+        .progress-dot { cursor: pointer; transition: transform 0.1s ease-in-out; }
+        .progress-dot:hover { transform: scale(1.5); }
+        
+        #toast-notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2d3748;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+        }
+        #toast-notification.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -10px);
+        }
     </style>
 </head>
 <body class="flex flex-col items-center">
@@ -56,8 +85,7 @@
                 </button>
             </div>
 
-            <!-- Navigation / SRS Controls -->
-            <div id="navigation-controls" class="flex items-center justify-between w-full mb-8">
+            <div id="navigation-controls" class="flex items-center justify-between w-full my-8">
                 <button id="prev-btn" class="animated-button px-6 py-3 bg-white rounded-xl flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/></svg>
                     Trước
@@ -69,13 +97,15 @@
                 </button>
             </div>
             
-            <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-4">
-                 <button id="srs-show-answer-btn" class="srs-btn animated-button px-6 py-3 bg-sky-600 text-white rounded-xl flex-1">Xem đáp án</button>
-                 <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-4">
+            <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-2">
+                 <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-2">
                     <button data-rating="hard" class="srs-rating-btn animated-button px-6 py-3 bg-red-500 text-white rounded-xl flex-1">Khó</button>
                     <button data-rating="good" class="srs-rating-btn animated-button px-6 py-3 bg-blue-500 text-white rounded-xl flex-1">Bình thường</button>
                     <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1">Dễ</button>
                  </div>
+                 <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                 </button>
             </div>
 
             <div class="p-3 bg-white rounded-2xl shadow-inner-sm flex flex-wrap items-center justify-center gap-3 w-full max-w-xl mx-auto border border-slate-200">
@@ -99,6 +129,9 @@
                         <label for="auto-play-examples-toggle" class="font-medium text-slate-600 text-xs">Tự phát ví dụ</label>
                     </div>
                 </div>
+                <button id="progress-matrix-btn" class="animated-button p-2 bg-white text-slate-600 rounded-lg" title="Tiến độ học tập">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 0"/><path d="M12.7 14a6 6 0 0 0-6 0"/><path d="M6.7 20a6 6 0 0 0-6 0"/></svg>
+                </button>
             </div>
         </main>
         
@@ -106,7 +139,6 @@
             <label for="category-select" class="block text-center text-xl font-semibold text-slate-600 mb-4">Chọn Chủ Đề</label>
             <div class="relative w-full max-w-sm mx-auto">
                 <select id="category-select" class="w-full p-3 text-base font-medium text-slate-700 bg-white border border-slate-300 rounded-lg shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
-                    <!-- Options will be added by JS -->
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
@@ -117,16 +149,36 @@
     
     <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
         <div class="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
-            <h3 class="text-lg font-bold text-red-600 mb-2">Đã xảy ra lỗi</h3>
+            <h3 id="error-title" class="text-lg font-bold text-red-600 mb-2">Đã xảy ra lỗi</h3>
             <p id="error-message" class="text-slate-600 mb-4">Không thể thực hiện yêu cầu. Vui lòng thử lại.</p>
-            <button id="close-error-modal" class="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Đóng</button>
+            <button id="close-error-modal-btn" class="w-full bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Đóng</button>
         </div>
     </div>
 
+    <div id="progress-matrix-modal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl shadow-xl p-6 max-w-4xl w-full max-h-[80vh] flex flex-col">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-slate-800">Tiến độ học tập</h3>
+                <button id="close-progress-matrix-btn" class="text-slate-500 hover:text-slate-800">&times;</button>
+            </div>
+            <div class="flex items-center justify-center gap-4 text-xs mb-4">
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-slate-300"></div><span>Chưa học</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-red-500"></div><span>Khó</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-blue-500"></div><span>Bình thường</span></div>
+                <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded-sm bg-green-500"></div><span>Dễ</span></div>
+            </div>
+            <div id="progress-grid-container" class="progress-grid overflow-y-auto p-2 bg-slate-100 rounded-lg">
+            </div>
+        </div>
+    </div>
+    
+    <div id="toast-notification"></div>
+
     <script>
-        // --- APP LOGIC ---
         const SRS_PROGRESS_KEY = "toeicSrsProgressData";
         const REVIEW_LIST_KEY = "toeicReviewListData";
+        const REVIEW_SESSION_KEY = "toeicReviewSession";
+
         let vocabularyData = {};
         let srsProgressData = {};
 
@@ -139,11 +191,17 @@
         let isPlaying = false;
         let autoplayInterval = null;
         let isReviewMode = false;
+        let lastCompletedSessionWords = [];
         
         let speechSynth = window.speechSynthesis;
         let availableVoices = [];
         let voicesLoaded = false;
-        let currentApiAudio = null;
+        
+        let activeAudioSession = {
+            player: null,
+            button: null,
+            originalButtonContent: ''
+        };
 
         const ui = {
             flashcard: document.getElementById('flashcard'),
@@ -151,7 +209,6 @@
             cardBackContent: document.getElementById('card-back-content'),
             navigationControls: document.getElementById('navigation-controls'),
             srsControls: document.getElementById('srs-controls'),
-            srsShowAnswerBtn: document.getElementById('srs-show-answer-btn'),
             srsRatingGroup: document.getElementById('srs-rating-group'),
             prevBtn: document.getElementById('prev-btn'),
             nextBtn: document.getElementById('next-btn'),
@@ -165,8 +222,15 @@
             autoPlayAudioToggle: document.getElementById('auto-play-audio-toggle'),
             autoPlayExamplesToggle: document.getElementById('auto-play-examples-toggle'),
             errorModal: document.getElementById('error-modal'),
+            errorTitle: document.getElementById('error-title'),
             errorMessage: document.getElementById('error-message'),
-            closeErrorModalBtn: document.getElementById('close-error-modal'),
+            closeErrorModalBtn: document.getElementById('close-error-modal-btn'),
+            progressMatrixModal: document.getElementById('progress-matrix-modal'),
+            progressMatrixBtn: document.getElementById('progress-matrix-btn'),
+            closeProgressMatrixBtn: document.getElementById('close-progress-matrix-btn'),
+            progressGridContainer: document.getElementById('progress-grid-container'),
+            shuffleBtn: document.getElementById('shuffle-btn'),
+            toast: document.getElementById('toast-notification'),
         };
         
         const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg><span>Phát</span>`;
@@ -174,11 +238,21 @@
         const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
         const loadingIconSVG = `<div class="loader"></div>`;
 
-        const API_KEY = ""; // IMPORTANT: Paste your API Key here if you want to use Gemini TTS
+        const API_KEY = "";
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
         const VOICE_NAME = "Puck";
 
-        // --- SRS Logic ---
+        let audioUnlocked = false;
+        function unlockAudioContext() {
+            if (audioUnlocked) return;
+            const sound = new Audio("data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA");
+            sound.play().then(() => {
+                audioUnlocked = true;
+                document.body.removeEventListener('click', unlockAudioContext);
+                document.body.removeEventListener('touchend', unlockAudioContext);
+            }).catch(e => {});
+        }
+        
         function getSrsProgress(wordKey) {
             return srsProgressData[wordKey] || { level: 1, nextReviewDate: new Date().toISOString() };
         }
@@ -188,11 +262,11 @@
             let currentLevel = progress.level;
 
             if (rating === 'hard') {
-                currentLevel = Math.max(1, currentLevel - 1);
+                currentLevel = 1;
             } else if (rating === 'good') {
-                currentLevel = Math.min(MAX_SRS_LEVEL, currentLevel + 1);
+                // No change
             } else if (rating === 'easy') {
-                currentLevel = Math.min(MAX_SRS_LEVEL, currentLevel + 2);
+                currentLevel = Math.min(MAX_SRS_LEVEL, currentLevel + 1);
             }
 
             const intervalDays = SRS_INTERVALS[currentLevel];
@@ -209,7 +283,7 @@
         function getReviewQueue() {
             const today = new Date();
             today.setHours(23, 59, 59, 999);
-            const queue = [];
+            let queue = [];
             for (const category in vocabularyData) {
                 if (category === "Chưa ghi nhớ") continue;
                 for (const wordKey in vocabularyData[category]) {
@@ -221,8 +295,60 @@
             }
             return queue;
         }
+        
+        function updateProgressMatrix() {
+            ui.progressGridContainer.innerHTML = '';
+            
+            let allWords = [];
+            for (const category in vocabularyData) {
+                if (category === "Chưa ghi nhớ") continue;
+                for (const wordKey in vocabularyData[category]) {
+                    allWords.push({ key: wordKey, category: category });
+                }
+            }
 
-        // --- Data Handling ---
+            allWords.forEach(wordInfo => {
+                 const dot = document.createElement('div');
+                 let dotColorClass = 'bg-slate-300';
+                 let dotTitle = `${wordInfo.key} (Chủ đề: ${wordInfo.category})`;
+
+                 if (srsProgressData.hasOwnProperty(wordInfo.key)) {
+                     const progress = srsProgressData[wordInfo.key];
+                     const level = progress.level;
+                     dotTitle += ` - Level: ${level}`;
+
+                     if (level <= 2) {
+                         dotColorClass = 'bg-red-500';
+                     } else if (level <= 4) {
+                         dotColorClass = 'bg-blue-500';
+                     } else {
+                         dotColorClass = 'bg-green-500';
+                     }
+                 }
+                 
+                 dot.className = `progress-dot w-4 h-4 rounded-sm ${dotColorClass}`;
+                 dot.title = dotTitle;
+                 dot.dataset.wordKey = wordInfo.key;
+                 dot.dataset.category = wordInfo.category;
+
+                 dot.addEventListener('click', () => {
+                    const wordCategory = dot.dataset.category;
+                    const wordKey = dot.dataset.wordKey;
+                    
+                    const wordIndex = Object.keys(vocabularyData[wordCategory]).indexOf(wordKey);
+
+                    if (wordIndex !== -1) {
+                        selectCategory(wordCategory);
+                        currentIndex = wordIndex;
+                        displayCard();
+                        ui.progressMatrixModal.classList.add('hidden');
+                    }
+                 });
+
+                 ui.progressGridContainer.appendChild(dot);
+            });
+        }
+
         function saveDataToLocalStorage() {
             try {
                 const reviewList = vocabularyData["Chưa ghi nhớ"] || {};
@@ -258,8 +384,32 @@
                 }
             }
         }
+
+        function saveReviewSession() {
+            if (!isReviewMode) return;
+            const sessionData = {
+                words: currentWords,
+                index: currentIndex
+            };
+            localStorage.setItem(REVIEW_SESSION_KEY, JSON.stringify(sessionData));
+        }
+
+        function loadReviewSession() {
+            const savedSession = localStorage.getItem(REVIEW_SESSION_KEY);
+            if (savedSession) {
+                try {
+                    return JSON.parse(savedSession);
+                } catch (e) {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        function clearReviewSession() {
+             localStorage.removeItem(REVIEW_SESSION_KEY);
+        }
         
-        // --- UI and App Flow ---
         function createCategoryDropdown() {
             ui.categorySelect.innerHTML = '';
             let categoryKeys = Object.keys(vocabularyData);
@@ -298,7 +448,7 @@
             });
         }
 
-        function selectCategory(key, customWordList = null) {
+        function selectCategory(key, customWordList = null, resumeIndex = 0) {
             stopAutoplay();
             currentCategoryKey = key;
             isReviewMode = (key === "SRS_REVIEW_MODE");
@@ -307,12 +457,12 @@
                 currentWords = customWordList || [];
             } else {
                 currentWords = vocabularyData[key] ? Object.keys(vocabularyData[key]) : [];
+                clearReviewSession();
             }
             
-            currentIndex = 0;
+            currentIndex = resumeIndex;
             ui.categorySelect.value = key; 
             updateNavigation(); 
-            
             displayCard();
         }
 
@@ -324,22 +474,48 @@
             ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
             ui.srsControls.classList.toggle('hidden', !isReviewMode);
             ui.srsControls.classList.toggle('flex', isReviewMode);
-            ui.srsShowAnswerBtn.classList.remove('hidden');
             ui.srsRatingGroup.classList.add('hidden');
             ui.srsRatingGroup.classList.remove('flex');
+            ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
+            ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
+
 
             const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
             ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
             ui.deleteBtn.style.display = isManualReviewCategory ? 'flex' : 'none';
 
             setTimeout(() => { 
+                ui.cardFrontContent.innerHTML = '';
+                ui.cardBackContent.innerHTML = '';
+
                 if (currentWords.length === 0 || currentIndex >= currentWords.length) {
-                    const message = isReviewMode ? "Chúc mừng! Bạn đã hoàn thành tất cả các từ cần ôn tập hôm nay." : "Chủ đề này chưa có từ nào.";
-                    ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">${message}</p>`;
-                    ui.cardBackContent.innerHTML = '';
+                    if (isReviewMode) {
+                        lastCompletedSessionWords = [...currentWords];
+                        const messageP = document.createElement('p');
+                        messageP.className = 'text-xl text-slate-500 mb-4';
+                        messageP.textContent = 'Chúc mừng! Bạn đã hoàn thành phiên ôn tập.';
+                        
+                        const reviewAgainBtn = document.createElement('button');
+                        reviewAgainBtn.className = 'animated-button px-6 py-3 bg-sky-600 text-white rounded-xl';
+                        reviewAgainBtn.textContent = 'Ôn tập thêm lần nữa';
+                        reviewAgainBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            restartReviewSession();
+                        });
+                        
+                        ui.cardFrontContent.append(messageP, reviewAgainBtn);
+                        clearReviewSession();
+                    } else {
+                        ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Chủ đề này chưa có từ nào.</p>`;
+                    }
+                    
                     ui.reviewBtn.style.display = 'none';
                     ui.deleteBtn.style.display = 'none';
-                    if(isReviewMode) ui.srsControls.classList.add('hidden');
+                    if(isReviewMode) {
+                        ui.srsControls.classList.add('hidden');
+                        ui.srsRatingGroup.classList.add('hidden');
+                        ui.shuffleBtn.classList.add('hidden');
+                    }
                     updateNavigation();
                     return;
                 }
@@ -354,37 +530,95 @@
 
                 ui.cardFrontContent.innerHTML = `<h2 class="text-4xl md:text-5xl font-bold text-center break-words text-slate-800">${wordKey}</h2>`;
                 
-                let backHTML = `<div class="p-4 w-full">
-                    <div class="flex flex-col items-start gap-2 mb-4">
-                        <div class="flex items-baseline gap-2">
-                            <h3 class="text-3xl font-bold text-sky-800">${wordKey}</h3>
-                            <p class="text-lg text-slate-500">${cardData.phonetic || ''}</p>
-                        </div>
-                        <button class="play-audio-btn text-xl" data-text-to-speak="${wordKey}" title="Phát âm">${speakerIconSVG}</button>
-                    </div>`;
+                const backContentWrapper = document.createElement('div');
+                backContentWrapper.className = 'p-4 w-full';
+
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'flex flex-col items-start gap-2 mb-4';
+                
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'flex items-baseline gap-2';
+                
+                const wordTitle = document.createElement('h3');
+                wordTitle.className = 'text-3xl font-bold text-sky-800';
+                wordTitle.textContent = wordKey;
+                
+                const phoneticText = document.createElement('p');
+                phoneticText.className = 'text-lg text-slate-500';
+                phoneticText.textContent = cardData.phonetic || '';
+
+                titleDiv.append(wordTitle, phoneticText);
+
+                const mainAudioBtn = document.createElement('button');
+                mainAudioBtn.className = 'play-audio-btn text-xl';
+                mainAudioBtn.dataset.textToSpeak = wordKey;
+                mainAudioBtn.title = 'Phát âm';
+                mainAudioBtn.innerHTML = speakerIconSVG;
+                mainAudioBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    playAudio(e.currentTarget.dataset.textToSpeak, e.currentTarget);
+                });
+
+                headerDiv.append(titleDiv, mainAudioBtn);
+                backContentWrapper.appendChild(headerDiv);
 
                 cardData.meanings.forEach((meaningData) => {
-                    backHTML += `<div class="mb-5 p-4 bg-white rounded-xl border">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="text-xs font-semibold uppercase text-sky-600 bg-sky-100 px-2 py-1 rounded-full">${meaningData.type}</span>
-                            <p class="text-lg font-semibold text-slate-800">${meaningData.meaning}</p>
-                        </div>
-                        <ul class="space-y-3 list-inside">`;
+                    const meaningBlock = document.createElement('div');
+                    meaningBlock.className = 'mb-5 p-4 bg-white rounded-xl border';
+
+                    const meaningHeader = document.createElement('div');
+                    meaningHeader.className = 'flex items-center gap-3 mb-3';
+                    
+                    const typeBadge = document.createElement('span');
+                    typeBadge.className = 'text-xs font-semibold uppercase text-sky-600 bg-sky-100 px-2 py-1 rounded-full';
+                    typeBadge.textContent = meaningData.type;
+
+                    const meaningText = document.createElement('p');
+                    meaningText.className = 'text-lg font-semibold text-slate-800';
+                    meaningText.textContent = meaningData.meaning;
+
+                    meaningHeader.append(typeBadge, meaningText);
+                    
+                    const exampleList = document.createElement('ul');
+                    exampleList.className = 'space-y-3 list-inside';
+
                     meaningData.examples.forEach((ex) => {
-                        const audioButton = `<button class="play-audio-btn" data-text-to-speak="${ex.en.replace(/"/g, '&quot;')}" title="Phát âm ví dụ">${speakerIconSVG}</button>`;
-                        backHTML += `<li class="text-base">
-                            <p class="text-slate-700">“${ex.en}” ${audioButton}</p>
-                            <p class="text-sm text-slate-500 italic ml-4">→ ${ex.vi}</p>
-                        </li>`;
+                        const listItem = document.createElement('li');
+                        listItem.className = 'text-base';
+                        
+                        const englishLine = document.createElement('p');
+                        englishLine.className = 'text-slate-700';
+                        englishLine.textContent = `“${ex.en}” `;
+
+                        const exampleAudioBtn = document.createElement('button');
+                        exampleAudioBtn.className = 'play-audio-btn';
+                        exampleAudioBtn.dataset.textToSpeak = ex.en;
+                        exampleAudioBtn.title = 'Phát âm ví dụ';
+                        exampleAudioBtn.innerHTML = speakerIconSVG;
+                        exampleAudioBtn.addEventListener('click', (e) => {
+                           e.stopPropagation();
+                           playAudio(e.currentTarget.dataset.textToSpeak, e.currentTarget);
+                        });
+
+                        englishLine.appendChild(exampleAudioBtn);
+
+                        const vietnameseLine = document.createElement('p');
+                        vietnameseLine.className = 'text-sm text-slate-500 italic ml-4';
+                        vietnameseLine.textContent = `→ ${ex.vi}`;
+
+                        listItem.append(englishLine, vietnameseLine);
+                        exampleList.appendChild(listItem);
                     });
-                    backHTML += `</ul></div>`;
+
+                    meaningBlock.append(meaningHeader, exampleList);
+                    backContentWrapper.appendChild(meaningBlock);
                 });
-                backHTML += `</div>`;
-                ui.cardBackContent.innerHTML = backHTML;
-                
-                attachAudioListeners(ui.cardBackContent);
+
+                ui.cardBackContent.appendChild(backContentWrapper);
+
                 updateReviewButtonState();
                 updateNavigation();
+                if(isReviewMode) saveReviewSession();
             }, 150);
         }
 
@@ -393,20 +627,17 @@
             
             const wordKey = currentWords[currentIndex];
             updateSrsProgress(wordKey, rating);
+            updateProgressMatrix();
 
             currentIndex++;
             if (currentIndex >= currentWords.length) {
-                ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Chúc mừng! Bạn đã hoàn thành phiên ôn tập.</p>`;
-                ui.cardBackContent.innerHTML = '';
-                ui.srsControls.classList.add('hidden');
-                createCategoryDropdown();
+                displayCard();
             } else {
                 displayCard();
             }
             updateNavigation();
         }
         
-        // --- Helper & Utility Functions ---
         speechSynth.onvoiceschanged = () => {
             if (!voicesLoaded) {
                 availableVoices = speechSynth.getVoices();
@@ -420,23 +651,219 @@
                 try {
                     const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
                     if (!response.ok) {
-                        if (response.status === 400) { showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ. Vui lòng kiểm tra lại API Key của bạn."); return null; }
+                        if (response.status === 400) { showErrorModal("Lỗi API Key hoặc yêu cầu không hợp lệ."); return null; }
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
                     return await response.json();
                 } catch (error) {
                     console.error(`API call attempt ${i + 1} failed:`, error);
-                    if (i === retries - 1) { showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử. ${error.message}`); return null; }
+                    if (i === retries - 1) { showErrorModal(`Không thể kết nối tới Gemini API sau ${retries} lần thử.`); return null; }
                     await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
                 }
             }
         }
         function base64ToArrayBuffer(base64) { const binaryString = window.atob(base64); const len = binaryString.length; const bytes = new Uint8Array(len); for (let i = 0; i < len; i++) bytes[i] = binaryString.charCodeAt(i); return bytes.buffer; }
         function pcmToWav(pcmData, sampleRate) { const numChannels = 1, bytesPerSample = 2, blockAlign = numChannels * bytesPerSample, byteRate = sampleRate * blockAlign, dataSize = pcmData.byteLength, buffer = new ArrayBuffer(44 + dataSize), view = new DataView(buffer); function writeString(view, offset, string) { for (let i = 0; i < string.length; i++) view.setUint8(offset + i, string.charCodeAt(i)); } writeString(view, 0, 'RIFF'); view.setUint32(4, 36 + dataSize, true); writeString(view, 8, 'WAVE'); writeString(view, 12, 'fmt '); view.setUint32(16, 16, true); view.setUint16(20, 1, true); view.setUint16(22, numChannels, true); view.setUint32(24, sampleRate, true); view.setUint32(28, byteRate, true); view.setUint16(32, blockAlign, true); view.setUint16(34, 16, true); writeString(view, 36, 'data'); view.setUint32(40, dataSize, true); const pcm16 = new Int16Array(pcmData); for (let i = 0; i < pcm16.length; i++) view.setInt16(44 + i * 2, pcm16[i], true); return new Blob([view], { type: 'audio/wav' }); }
-        function playBrowserAudio(text, buttonEl) { const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'en-US'; const originalContent = buttonEl.innerHTML; buttonEl.innerHTML = loadingIconSVG; buttonEl.disabled = true; const cleanup = () => { buttonEl.innerHTML = originalContent; buttonEl.disabled = false; }; utterance.onend = cleanup; utterance.onerror = (e) => { console.error("SpeechSynthesis Error:", e); cleanup(); }; const setVoiceAndSpeak = () => { const englishVoice = availableVoices.find(voice => voice.name === 'Google US English') || availableVoices.find(voice => voice.lang === 'en-US'); if (englishVoice) { utterance.voice = englishVoice; } speechSynth.speak(utterance); }; if (voicesLoaded) { setVoiceAndSpeak(); } else { speechSynth.onvoiceschanged = () => { if (!voicesLoaded) { availableVoices = speechSynth.getVoices(); voicesLoaded = true; if (buttonEl.disabled) { setVoiceAndSpeak(); } } }; } }
-        async function playAudio(text, buttonEl) { if (!text) return; if (speechSynth.speaking) { speechSynth.cancel(); return; } if (currentApiAudio) { currentApiAudio.pause(); return; } if (!API_KEY) { playBrowserAudio(text, buttonEl); return; } const originalContent = buttonEl.innerHTML; buttonEl.innerHTML = loadingIconSVG; buttonEl.disabled = true; try { const payload = { contents: [{ parts: [{ text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } } }, model: TTS_MODEL }; const result = await geminiFetch(TTS_MODEL, payload); if (!result) { playBrowserAudio(text, buttonEl); return; } const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data; const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType; if (!audioData || !mimeType || !mimeType.startsWith("audio/")) throw new Error("Invalid audio data received."); const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10); const pcmData = base64ToArrayBuffer(audioData); const wavBlob = pcmToWav(pcmData, sampleRate); const audioUrl = URL.createObjectURL(wavBlob); const audio = new Audio(audioUrl); const cleanup = () => { buttonEl.innerHTML = originalContent; buttonEl.disabled = false; URL.revokeObjectURL(audioUrl); currentApiAudio = null; }; currentApiAudio = audio; audio.onended = cleanup; audio.onpause = cleanup; audio.onerror = () => { cleanup(); showErrorModal("Lỗi khi phát file âm thanh."); }; audio.play(); } catch (error) { console.error("Error playing Gemini audio:", error); buttonEl.innerHTML = originalContent; buttonEl.disabled = false; playBrowserAudio(text, buttonEl); } }
-        async function playAudioSequence(buttons) { for (const btn of buttons) { const text = btn.dataset.textToSpeak; if (text) { await new Promise(resolve => { playAudio(text, btn); const checkEnd = setInterval(() => { if (!btn.disabled || !isPlaying) { clearInterval(checkEnd); resolve(); } }, 100); }); if (!isPlaying) break; } } }
-        function findWordData(e){for(const t in vocabularyData){if("Chưa ghi nhớ"!==t&&vocabularyData[t][e])return vocabularyData[t][e]}return null}function updateReviewButtonState(){if(!currentWords||0===currentWords.length||"Chưa ghi nhớ"===currentCategoryKey)return void ui.reviewBtn.classList.remove("is-marked");const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];ui.reviewBtn.classList.toggle("is-marked",t)}function handleReviewClick(){if(!currentWords||0===currentWords.length)return;const e=currentWords[currentIndex],t=!!vocabularyData["Chưa ghi nhớ"][e];t?delete vocabularyData["Chưa ghi nhớ"][e]:(wordData=findWordData(e))&&(vocabularyData["Chưa ghi nhớ"]||(vocabularyData["Chưa ghi nhớ"]={}),vocabularyData["Chưa ghi nhớ"][e]={...wordData}),saveDataToLocalStorage(),createCategoryDropdown(),updateReviewButtonState()}function handleDeleteFromReview(){if("Chưa ghi nhớ"!==currentCategoryKey||0===currentWords.length)return;const e=currentWords[currentIndex];delete vocabularyData["Chưa ghi nhớ"][e],saveDataToLocalStorage(),currentWords.splice(currentIndex,1),currentIndex>=currentWords.length&&(currentIndex=Math.max(0,currentWords.length-1)),createCategoryDropdown(),displayCard()}function updateNavigation(){const e=currentWords.length>0,t=currentWords.length>1;ui.cardCounter.textContent=e?`${currentIndex+1}/${currentWords.length}`:"0 / 0";const o=isPlaying||!e;ui.prevBtn.disabled=o||!t,ui.nextBtn.disabled=o||!t,ui.playPauseBtn.disabled=!e,ui.playSpeedInput.disabled=isPlaying||ui.autoPlayAudioToggle.checked||ui.autoPlayExamplesToggle.checked,ui.autoFlipToggle.disabled=o,ui.autoPlayAudioToggle.disabled=o,ui.autoPlayExamplesToggle.disabled=o}function navigate(e){currentWords.length>0&&(currentIndex=(currentIndex+e+currentWords.length)%currentWords.length,displayCard())}function stopAutoplay(){isPlaying&&(isPlaying=!1,clearTimeout(autoplayInterval),autoplayInterval=null,speechSynth.speaking&&speechSynth.cancel(),currentApiAudio&&currentApiAudio.pause(),ui.playPauseBtn.innerHTML=playIconSVG,ui.flashcard.style.pointerEvents="auto",updateNavigation())}function startAutoplay(){0!==currentWords.length?(isPlaying=!0,ui.playPauseBtn.innerHTML=pauseIconSVG,ui.flashcard.style.pointerEvents="none",updateNavigation(),runAutoplayCycle()):showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.")}async function runAutoplayCycle(){if(!isPlaying)return;if(ui.flashcard.classList.contains("is-flipped")&&(ui.flashcard.classList.remove("is-flipped"),await new Promise(e=>setTimeout(e,350))),displayCard(),await new Promise(e=>setTimeout(e,200)),!isPlaying)return;const e=ui.autoFlipToggle.checked,t=ui.autoPlayAudioToggle.checked,o=ui.autoPlayExamplesToggle.checked,i=t||o;if(i){if(e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200))),!isPlaying)return;const n=currentWords[currentIndex],s=[];if(t){const e=ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${n}"]`);e&&s.push(e)}if(o){const e=ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${n}"])`);e.length>0&&s.push(e[0])}await playAudioSequence(s)}else{let t=1e3*parseInt(ui.playSpeedInput.value,10);if(await new Promise(e=>setTimeout(e,e?t/2:t)),!isPlaying)return;e&&(ui.flashcard.classList.add("is-flipped"),await new Promise(e=>setTimeout(e,200))),isPlaying&&await new Promise(e=>setTimeout(e,t/2))}if(!isPlaying)return;navigate(1),runAutoplayCycle()}function showErrorModal(e){ui.errorMessage.textContent=e,ui.errorModal.classList.remove("hidden")}
+        
+        function playBrowserAudio(text, buttonEl) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            const originalContent = buttonEl.innerHTML;
+            buttonEl.innerHTML = loadingIconSVG;
+            buttonEl.disabled = true;
+
+            const cleanup = () => {
+                buttonEl.innerHTML = originalContent;
+                buttonEl.disabled = false;
+            };
+
+            utterance.onend = cleanup;
+            utterance.onerror = (e) => {
+                console.error("SpeechSynthesis Error:", e);
+                cleanup();
+            };
+
+            const setVoiceAndSpeak = () => {
+                const englishVoice = availableVoices.find(voice => voice.name === 'Google US English') || availableVoices.find(voice => voice.lang.startsWith('en-'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                speechSynth.speak(utterance);
+            };
+
+            if (voicesLoaded) {
+                setVoiceAndSpeak();
+            } else {
+                speechSynth.onvoiceschanged = () => {
+                    if (!voicesLoaded) {
+                        availableVoices = speechSynth.getVoices();
+                        voicesLoaded = true;
+                        if (buttonEl.disabled) {
+                            setVoiceAndSpeak();
+                        }
+                    }
+                };
+            }
+        }
+
+        async function playAudio(text, buttonEl) {
+            if (!text || buttonEl.disabled) return;
+
+            if (activeAudioSession.player) {
+                activeAudioSession.player.pause();
+            }
+            if (speechSynth.speaking) {
+                speechSynth.cancel();
+            }
+
+            if (!API_KEY) {
+                playBrowserAudio(text, buttonEl);
+                return;
+            }
+
+            const originalContent = buttonEl.innerHTML;
+            buttonEl.innerHTML = loadingIconSVG;
+            buttonEl.disabled = true;
+
+            try {
+                const payload = { contents: [{ parts: [{ text }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: VOICE_NAME } } } }, model: TTS_MODEL };
+                const result = await geminiFetch(TTS_MODEL, payload);
+                if (!result) {
+                    playBrowserAudio(text, buttonEl);
+                    return;
+                }
+                const audioData = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+                const mimeType = result?.candidates?.[0]?.content?.parts?.[0]?.inlineData?.mimeType;
+                if (!audioData || !mimeType || !mimeType.startsWith("audio/")) throw new Error("Invalid audio data received.");
+                
+                const sampleRate = parseInt(mimeType.match(/rate=(\d+)/)[1], 10);
+                const pcmData = base64ToArrayBuffer(audioData);
+                const wavBlob = pcmToWav(pcmData, sampleRate);
+                const audioUrl = URL.createObjectURL(wavBlob);
+                
+                const audio = new Audio(audioUrl);
+
+                const cleanup = () => {
+                    buttonEl.innerHTML = originalContent;
+                    buttonEl.disabled = false;
+                    URL.revokeObjectURL(audioUrl);
+                    if (activeAudioSession.player === audio) {
+                        activeAudioSession.player = null;
+                        activeAudioSession.button = null;
+                        activeAudioSession.originalButtonContent = '';
+                    }
+                };
+                
+                activeAudioSession = { player: audio, button: buttonEl, originalButtonContent: originalContent };
+                audio.onended = cleanup;
+                audio.onpause = cleanup;
+                audio.onerror = () => {
+                    cleanup();
+                    showErrorModal("Lỗi khi phát file âm thanh.");
+                };
+                
+                await audio.play();
+
+            } catch (error) {
+                console.error("Error playing Gemini audio:", error);
+                buttonEl.innerHTML = originalContent;
+                buttonEl.disabled = false;
+                playBrowserAudio(text, buttonEl);
+            }
+        }
+        
+        async function playAudioSequence(buttons) {
+            for (const btn of buttons) {
+                const text = btn.dataset.textToSpeak;
+                if (text) {
+                    await new Promise(resolve => {
+                        playAudio(text, btn);
+                        const checkEnd = setInterval(() => {
+                            if (!btn.disabled || !isPlaying) {
+                                clearInterval(checkEnd);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                    if (!isPlaying) break;
+                }
+            }
+        }
+        function findWordData(wordKey) { for (const category in vocabularyData) { if (category !== "Chưa ghi nhớ" && vocabularyData[category][wordKey]) { return vocabularyData[category][wordKey]; } } return null; }
+        function updateReviewButtonState() { if (!currentWords || currentWords.length === 0 || currentCategoryKey === "Chưa ghi nhớ") { ui.reviewBtn.classList.remove("is-marked"); return; } const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); ui.reviewBtn.classList.toggle("is-marked", isMarked); }
+        function handleReviewClick() { if (!currentWords || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]); if (isMarked) { delete vocabularyData["Chưa ghi nhớ"][wordKey]; } else { const wordData = findWordData(wordKey); if (wordData) { if (!vocabularyData["Chưa ghi nhớ"]) { vocabularyData["Chưa ghi nhớ"] = {}; } vocabularyData["Chưa ghi nhớ"][wordKey] = { ...wordData }; } } saveDataToLocalStorage(); createCategoryDropdown(); updateReviewButtonState(); }
+        function handleDeleteFromReview() { if (currentCategoryKey !== "Chưa ghi nhớ" || currentWords.length === 0) return; const wordKey = currentWords[currentIndex]; delete vocabularyData["Chưa ghi nhớ"][wordKey]; saveDataToLocalStorage(); currentWords.splice(currentIndex, 1); if (currentIndex >= currentWords.length) { currentIndex = Math.max(0, currentWords.length - 1); } createCategoryDropdown(); displayCard(); }
+        function updateNavigation() { const hasWords = currentWords.length > 0; const hasMultipleWords = currentWords.length > 1; ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0"; const isDisabled = isPlaying || !hasWords; ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0; ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1; ui.playPauseBtn.disabled = !hasWords; ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked; ui.autoFlipToggle.disabled = isDisabled; ui.autoPlayAudioToggle.disabled = isDisabled; ui.autoPlayExamplesToggle.disabled = isDisabled; }
+        function navigate(direction) { if (currentWords.length > 0) { const newIndex = currentIndex + direction; if (newIndex >= 0 && newIndex < currentWords.length) { currentIndex = newIndex; displayCard(); } } }
+        function stopAutoplay() { if (isPlaying) { isPlaying = false; clearTimeout(autoplayInterval); autoplayInterval = null; if (speechSynth.speaking) { speechSynth.cancel(); } if (activeAudioSession.player) { activeAudioSession.player.pause(); } ui.playPauseBtn.innerHTML = playIconSVG; ui.flashcard.style.pointerEvents = "auto"; updateNavigation(); } }
+        function startAutoplay() { if (currentWords.length > 0) { isPlaying = true; ui.playPauseBtn.innerHTML = pauseIconSVG; ui.flashcard.style.pointerEvents = "none"; updateNavigation(); runAutoplayCycle(); } else { showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu."); } }
+        async function runAutoplayCycle() { 
+            if (!isPlaying) return; 
+            if (ui.flashcard.classList.contains("is-flipped")) { ui.flashcard.classList.remove("is-flipped"); await new Promise(r => setTimeout(r, 350)); } 
+            displayCard(); 
+            await new Promise(r => setTimeout(r, 200)); 
+            if (!isPlaying) return; 
+            const shouldFlip = ui.autoFlipToggle.checked; 
+            const shouldPlayAudio = ui.autoPlayAudioToggle.checked; 
+            const shouldPlayExamples = ui.autoPlayExamplesToggle.checked; 
+            const isAudioMode = shouldPlayAudio || shouldPlayExamples; 
+            if (isAudioMode) { 
+                if (shouldFlip) { ui.flashcard.classList.add("is-flipped"); await new Promise(r => setTimeout(r, 200)); } 
+                if (!isPlaying) return; 
+                const wordKey = currentWords[currentIndex]; 
+                let audioButtonsToPlay = []; 
+                if (shouldPlayAudio) { const mainBtn = ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${wordKey}"]`); if (mainBtn) audioButtonsToPlay.push(mainBtn); } 
+                if (shouldPlayExamples) { const exampleBtns = ui.cardBackContent.querySelectorAll(`.play-audio-btn:not([data-text-to-speak="${wordKey}"])`); if (exampleBtns.length > 0) audioButtonsToPlay.push(exampleBtns[0]); } 
+                await playAudioSequence(audioButtonsToPlay); 
+            } else { 
+                let delay = parseInt(ui.playSpeedInput.value, 10) * 1000; 
+                await new Promise(r => setTimeout(r, shouldFlip ? delay / 2 : delay)); 
+                if (!isPlaying) return; 
+                if (shouldFlip) { ui.flashcard.classList.add("is-flipped"); await new Promise(r => setTimeout(r, 200)); } 
+                if (isPlaying) await new Promise(r => setTimeout(r, delay / 2)); 
+            } 
+            if (!isPlaying) return; 
+            if (currentIndex < currentWords.length - 1) { navigate(1); runAutoplayCycle(); } else { stopAutoplay(); } 
+        }
+        
+        function showToast(message) {
+            ui.toast.textContent = message;
+            ui.toast.classList.add('show');
+            setTimeout(() => {
+                ui.toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function showErrorModal(message, title = "Đã xảy ra lỗi") { 
+            ui.errorTitle.textContent = title;
+            ui.errorMessage.textContent = message; 
+            ui.errorModal.classList.remove("hidden"); 
+        }
+
+        function shuffleCurrentQueue() {
+            if (!isReviewMode || currentWords.length < 2) return;
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            currentIndex = 0;
+            displayCard();
+            showToast("Đã xáo trộn danh sách ôn tập!");
+        }
+
+        function restartReviewSession() {
+            if (!isReviewMode || lastCompletedSessionWords.length === 0) return;
+            
+            currentWords = [...lastCompletedSessionWords];
+            currentIndex = 0;
+
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            
+            displayCard();
+        }
 
         function initializeApp(data) {
             vocabularyData = data;
@@ -469,8 +896,17 @@
             });
 
             ui.flashcard.addEventListener('click', (e) => {
-                if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) return;
-                if (currentWords.length > 0 && !isReviewMode) {
+                if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) {
+                    return;
+                }
+
+                if (isReviewMode) {
+                    if (!ui.flashcard.classList.contains('is-flipped')) {
+                        ui.flashcard.classList.add('is-flipped');
+                        ui.srsRatingGroup.classList.remove('hidden');
+                        ui.srsRatingGroup.classList.add('flex');
+                    }
+                } else if (currentWords.length > 0) {
                     ui.flashcard.classList.toggle('is-flipped');
                 }
             });
@@ -480,17 +916,24 @@
             ui.deleteBtn.addEventListener('click', handleDeleteFromReview);
             ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden'));
             
-            ui.srsShowAnswerBtn.addEventListener('click', () => {
-                if (!ui.flashcard.classList.contains('is-flipped')) {
-                    ui.flashcard.classList.add('is-flipped');
-                    ui.srsShowAnswerBtn.classList.add('hidden');
-                    ui.srsRatingGroup.classList.remove('hidden');
-                    ui.srsRatingGroup.classList.add('flex');
+            ui.progressMatrixBtn.addEventListener('click', () => {
+                updateProgressMatrix();
+                ui.progressMatrixModal.classList.remove('hidden');
+            });
+            ui.closeProgressMatrixBtn.addEventListener('click', () => {
+                ui.progressMatrixModal.classList.add('hidden');
+            });
+            ui.progressMatrixModal.addEventListener('click', (e) => {
+                if (e.target === ui.progressMatrixModal) {
+                    ui.progressMatrixModal.classList.add('hidden');
                 }
             });
 
+            ui.shuffleBtn.addEventListener('click', shuffleCurrentQueue);
+
             document.querySelectorAll('.srs-rating-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     handleSrsAnswer(e.target.dataset.rating);
                 });
             });
@@ -505,23 +948,40 @@
             ui.categorySelect.addEventListener('change', (e) => {
                 const selectedKey = e.target.value;
                 if (selectedKey === "SRS_REVIEW_MODE") {
-                    const reviewQueue = getReviewQueue();
-                    selectCategory(selectedKey, reviewQueue);
+                    let reviewQueue = getReviewQueue();
+                    for (let i = reviewQueue.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
+                    }
+                    selectCategory(selectedKey, reviewQueue, 0);
                 } else {
                     selectCategory(selectedKey);
                 }
             });
 
-            const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
-            if(firstCategory) {
-                const reviewQueue = getReviewQueue();
-                selectCategory("SRS_REVIEW_MODE", reviewQueue);
+            const savedSession = loadReviewSession();
+            if (savedSession && savedSession.words.length > 0 && savedSession.index < savedSession.words.length) {
+                selectCategory("SRS_REVIEW_MODE", savedSession.words, savedSession.index);
             } else {
-                 ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Không có dữ liệu từ vựng nào.</p>`;
-                 updateNavigation();
+                let reviewQueue = getReviewQueue();
+                if (reviewQueue.length > 0) {
+                    for (let i = reviewQueue.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
+                    }
+                     selectCategory("SRS_REVIEW_MODE", reviewQueue, 0);
+                } else {
+                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
+                    if (firstCategory) {
+                        selectCategory(firstCategory);
+                    } else {
+                        ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Không có dữ liệu từ vựng nào.</p>`;
+                        updateNavigation();
+                    }
+                }
             }
         }
-
+        
         async function startApp() {
             try {
                 const response = await fetch('vocabulary.json');
@@ -532,11 +992,15 @@
                 initializeApp(data);
             } catch (error) {
                 console.error('Could not load vocabulary data:', error);
-                ui.cardFrontContent.innerHTML = `<p class="text-xl text-red-500 text-center"><b>Lỗi nghiêm trọng:</b><br>${error.message}<br><br>Hãy chắc chắn rằng bạn đã tải lên tệp <b>vocabulary.json</b> vào cùng một kho chứa trên GitHub.</p>`;
+                showErrorModal(`${error.message}. Hãy chắc chắn rằng bạn đã có tệp vocabulary.json trong cùng thư mục.`, "Lỗi tải dữ liệu");
             }
         }
 
-        startApp();
+        document.addEventListener('DOMContentLoaded', () => {
+            startApp();
+            document.body.addEventListener('click', unlockAudioContext);
+            document.body.addEventListener('touchend', unlockAudioContext);
+        });
     </script>
 </body>
 </html>
