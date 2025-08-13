@@ -11,6 +11,10 @@
     <style>
         html, body { height: 100%; overflow-x: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; padding-top: 1rem; padding-bottom: 1rem; }
+        /* **NEW**: Style to lock body scroll when a modal is open */
+        body.modal-open {
+            overflow: hidden;
+        }
         .flashcard-container { perspective: 1200px; }
         .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
         .flashcard.is-flipped { transform: rotateY(-180deg); }
@@ -211,7 +215,6 @@
         let availableVoices = [];
         let voicesLoaded = false;
         
-        // **REVISED**: Audio Handling for iOS
         let audioContext;
         let activeAudioSource = null;
 
@@ -249,7 +252,6 @@
             confirmMessage: document.getElementById('confirm-message'),
             confirmBtn: document.getElementById('confirm-btn'),
             cancelBtn: document.getElementById('cancel-btn'),
-            // Stats UI
             statsUnstudiedCount: document.getElementById('stats-unstudied-count'),
             statsUnstudiedPercent: document.getElementById('stats-unstudied-percent'),
             statsHardCount: document.getElementById('stats-hard-count'),
@@ -269,7 +271,6 @@
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
         const VOICE_NAME = "Puck";
 
-        // **REVISED**: iOS Audio Unlock
         function unlockAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -874,21 +875,25 @@
             ui.errorTitle.textContent = title;
             ui.errorMessage.textContent = message; 
             ui.errorModal.classList.remove("hidden"); 
+            lockBodyScroll();
         }
 
         function showConfirmModal(title, message, onConfirm) {
             ui.confirmTitle.textContent = title;
             ui.confirmMessage.textContent = message;
             ui.confirmModal.classList.remove('hidden');
+            lockBodyScroll();
 
             const confirmHandler = () => {
                 onConfirm();
                 ui.confirmModal.classList.add('hidden');
+                unlockBodyScroll();
                 cleanup();
             };
 
             const cancelHandler = () => {
                 ui.confirmModal.classList.add('hidden');
+                unlockBodyScroll();
                 cleanup();
             };
             
@@ -944,6 +949,14 @@
             );
         }
 
+        function lockBodyScroll() {
+            document.body.classList.add('modal-open');
+        }
+
+        function unlockBodyScroll() {
+            document.body.classList.remove('modal-open');
+        }
+
         function initializeApp(data) {
             vocabularyData = data;
             if (!vocabularyData["Chưa ghi nhớ"]) {
@@ -980,11 +993,10 @@
                 }
 
                 if (isReviewMode) {
-                    if (!ui.flashcard.classList.contains('is-flipped')) {
-                        ui.flashcard.classList.add('is-flipped');
-                        ui.srsRatingGroup.classList.remove('hidden');
-                        ui.srsRatingGroup.classList.add('flex');
-                    }
+                    ui.flashcard.classList.toggle('is-flipped');
+                    const isFlipped = ui.flashcard.classList.contains('is-flipped');
+                    ui.srsRatingGroup.classList.toggle('hidden', !isFlipped);
+                    ui.srsRatingGroup.classList.toggle('flex', isFlipped);
                 } else if (currentWords.length > 0) {
                     ui.flashcard.classList.toggle('is-flipped');
                 }
@@ -993,18 +1005,24 @@
             ui.playPauseBtn.addEventListener('click', () => { isPlaying ? stopAutoplay() : startAutoplay(); });
             ui.reviewBtn.addEventListener('click', handleReviewClick);
             ui.deleteBtn.addEventListener('click', handleDeleteFromReview);
-            ui.closeErrorModalBtn.addEventListener('click', () => ui.errorModal.classList.add('hidden'));
+            ui.closeErrorModalBtn.addEventListener('click', () => {
+                ui.errorModal.classList.add('hidden');
+                unlockBodyScroll();
+            });
             
             ui.progressMatrixBtn.addEventListener('click', () => {
                 updateProgressMatrixAndStats();
                 ui.progressMatrixModal.classList.remove('hidden');
+                lockBodyScroll();
             });
             ui.closeProgressMatrixBtn.addEventListener('click', () => {
                 ui.progressMatrixModal.classList.add('hidden');
+                unlockBodyScroll();
             });
             ui.progressMatrixModal.addEventListener('click', (e) => {
                 if (e.target === ui.progressMatrixModal) {
                     ui.progressMatrixModal.classList.add('hidden');
+                    unlockBodyScroll();
                 }
             });
 
