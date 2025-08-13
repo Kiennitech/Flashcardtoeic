@@ -82,8 +82,8 @@
 
     <div class="w-full max-w-3xl mx-auto flex flex-col flex-grow">
         <main class="flex-grow flex flex-col">
-            <!-- Thay đổi: Thêm h-[65vh] cho màn hình nhỏ và md:flex-grow cho màn hình lớn hơn -->
-            <div class="flashcard-container h-[65vh] md:h-auto md:flex-grow w-full mb-6 relative">
+            <!-- Thay đổi: Tăng chiều cao thẻ lên 75vh cho màn hình nhỏ -->
+            <div class="flashcard-container h-[75vh] md:h-auto md:flex-grow w-full mb-6 relative">
                 <div id="flashcard" class="flashcard">
                     <div class="flashcard-face flashcard-front">
                         <div id="card-front-content" class="text-center p-4">
@@ -281,10 +281,10 @@
         const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
         const loadingIconSVG = `<div class="loader"></div>`;
 
-        // Thay đổi: Dán API Key vào đây
         const API_KEY = "AIzaSyArL11WIWq1Me2ScsMNTMknlMnsHzbsq6Q";
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        const VOICE_NAME = "Puck";
+        // Thay đổi: Chuyển sang giọng nữ "Kore"
+        const VOICE_NAME = "Kore";
 
         function unlockAudioContext() {
             if (!audioContext) {
