@@ -108,7 +108,7 @@
                     <button data-rating="easy" class="srs-rating-btn animated-button px-6 py-3 bg-green-500 text-white rounded-xl flex-1 flex justify-center">Dễ</button>
                  </div>
                  <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
                  </button>
             </div>
 
@@ -134,7 +134,7 @@
                     </div>
                 </div>
                 <button id="progress-matrix-btn" class="animated-button p-2 bg-white text-slate-600 rounded-lg" title="Tiến độ học tập">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 0"/><path d="M12.7 14a6 6 0 0 0-6 0"/><path d="M6.7 20a6 6 0 0 0-6 0"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 0"/><path d="M12.7 14a6 6 0 0 0-6 0"/><path d="M6.7 20a6 6 0 0 0-6 0"/></svg>
                 </button>
             </div>
         </main>
@@ -264,7 +264,7 @@
         
         const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg><span>Phát</span>`;
         const pauseIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/></svg><span>Dừng</span>`;
-        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
+        const speakerIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-volume-2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>`;
         const loadingIconSVG = `<div class="loader"></div>`;
 
         // --- CORE FUNCTIONS ---
@@ -621,11 +621,11 @@
 
         function updateNavigation() {
             const hasWords = currentWords.length > 0;
-            const hasMultipleWords = currentWords.length > 1;
+            // CHANGE: Simplified the logic for disabling buttons, as looping is now default
             ui.cardCounter.textContent = hasWords ? `${currentIndex + 1}/${currentWords.length}` : "0 / 0";
             const isDisabled = isPlaying || !hasWords;
-            ui.prevBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === 0;
-            ui.nextBtn.disabled = isDisabled || !hasMultipleWords || currentIndex === currentWords.length - 1;
+            ui.prevBtn.disabled = isDisabled;
+            ui.nextBtn.disabled = isDisabled;
             ui.playPauseBtn.disabled = !hasWords;
             ui.playSpeedInput.disabled = isPlaying || ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked;
             ui.autoFlipToggle.disabled = isDisabled;
@@ -725,16 +725,30 @@
          */
         function playBrowserAudio(text, buttonEl) {
             if (speechSynth.speaking) {
-                speechSynth.cancel(); // Stop any previous speech
+                speechSynth.cancel();
             }
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
 
-            // Try to find a good quality English voice
-            const englishVoice = availableVoices.find(voice => voice.name === 'Google US English') || availableVoices.find(voice => voice.lang.startsWith('en-US'));
-            if (englishVoice) {
-                utterance.voice = englishVoice;
+            const preferredVoices = [
+                'Samantha', 'Google US English', 'Alex', 'Daniel'
+            ];
+
+            let selectedVoice = null;
+            for (const voiceName of preferredVoices) {
+                selectedVoice = availableVoices.find(voice => voice.name === voiceName && voice.lang.startsWith('en-'));
+                if (selectedVoice) break;
+            }
+            if (!selectedVoice) {
+                selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US') && voice.localService);
+            }
+            if (!selectedVoice) {
+                selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US'));
+            }
+
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
             }
 
             const originalContent = buttonEl.innerHTML;
@@ -748,19 +762,19 @@
 
             utterance.onend = cleanup;
             utterance.onerror = (e) => {
+                // CHANGE: Ignore "interrupted" error which occurs when user stops autoplay.
+                if (e.error === 'interrupted') {
+                    cleanup();
+                    return;
+                }
                 console.error("SpeechSynthesis Error:", e);
-                showErrorModal("Trình duyệt không hỗ trợ phát âm thanh.", "Lỗi tương thích");
+                showErrorModal(`Trình duyệt không hỗ trợ phát âm thanh (${e.error})`, "Lỗi tương thích");
                 cleanup();
             };
 
             speechSynth.speak(utterance);
         }
 
-        /**
-         * Main function to play audio. Now simplified to only use browser TTS.
-         * @param {string} text The text to speak.
-         * @param {HTMLElement} buttonEl The button element that triggered the audio.
-         */
         function playAudio(text, buttonEl) {
             if (!text || buttonEl.disabled) return;
             playBrowserAudio(text, buttonEl);
@@ -768,18 +782,18 @@
         
         async function playAudioSequence(buttons) {
             for (const btn of buttons) {
+                if (!isPlaying) break; // Check if user stopped during the sequence
                 const text = btn.dataset.textToSpeak;
                 if (text) {
                     await new Promise(resolve => {
                         playAudio(text, btn);
                         const checkEnd = setInterval(() => {
-                            if (!btn.disabled || !isPlaying) {
+                            if (!speechSynth.speaking || !isPlaying) {
                                 clearInterval(checkEnd);
                                 resolve();
                             }
                         }, 100);
                     });
-                    if (!isPlaying) break;
                 }
             }
         }
@@ -842,13 +856,18 @@
             updateNavigation();
         }
         
+        // CHANGE: Modified navigate function to loop around.
         function navigate(direction) {
-            if (currentWords.length > 0) {
-                const newIndex = currentIndex + direction;
-                if (newIndex >= 0 && newIndex < currentWords.length) {
-                    currentIndex = newIndex;
-                    displayCard();
+            if (currentWords.length > 1) { // Only loop if there's more than one card
+                let newIndex = currentIndex + direction;
+                if (newIndex >= currentWords.length) {
+                    newIndex = 0; // Loop to the beginning
                 }
+                if (newIndex < 0) {
+                    newIndex = currentWords.length - 1; // Loop to the end
+                }
+                currentIndex = newIndex;
+                displayCard();
             }
         }
 
@@ -878,14 +897,15 @@
             }
         }
 
+        // CHANGE: Modified autoplay cycle to loop instead of stopping.
         async function runAutoplayCycle() { 
             if (!isPlaying) return; 
+            
             if (ui.flashcard.classList.contains("is-flipped")) {
                 ui.flashcard.classList.remove("is-flipped");
                 await new Promise(r => setTimeout(r, 350));
             } 
-            displayCard(); 
-            await new Promise(r => setTimeout(r, 200));
+            // displayCard() is now called inside navigate()
             if (!isPlaying) return; 
             
             const shouldFlip = ui.autoFlipToggle.checked; 
@@ -923,12 +943,8 @@
             } 
             
             if (!isPlaying) return; 
-            if (currentIndex < currentWords.length - 1) {
-                navigate(1);
-                runAutoplayCycle();
-            } else {
-                stopAutoplay();
-            } 
+            navigate(1); // This now loops
+            autoplayInterval = setTimeout(runAutoplayCycle, 300); // Add a small delay before next cycle
         }
 
         function shuffleCurrentQueue() {
@@ -1057,8 +1073,8 @@
                 if (Math.abs(swipedX) < swipeThreshold || Math.abs(swipedY) > swipeRestraint) return;
                 
                 if (!isReviewMode) {
-                    if (swipedX < 0 && !ui.nextBtn.disabled) navigate(1);
-                    if (swipedX > 0 && !ui.prevBtn.disabled) navigate(-1);
+                    if (swipedX < 0) navigate(1);
+                    if (swipedX > 0) navigate(-1);
                 }
             });
 
