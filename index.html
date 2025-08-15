@@ -11,10 +11,7 @@
     <style>
         html, body { height: 100%; overflow-x: hidden; }
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; padding-top: 1rem; padding-bottom: 1rem; }
-        /* Style to lock body scroll when a modal is open */
-        body.modal-open {
-            overflow: hidden;
-        }
+        body.modal-open { overflow: hidden; }
         .flashcard-container { perspective: 1200px; }
         .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1); cursor: pointer; }
         .flashcard.is-flipped { transform: rotateY(-180deg); }
@@ -24,45 +21,18 @@
         .animated-button { transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
         .animated-button:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
         .animated-button:active { transform: translateY(0px); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
-        .card-action-btn { position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(4px); border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease; z-index: 10; }
-        .card-action-btn:hover { transform: scale(1.1); }
-        #review-btn.is-marked .unmarked-icon { display: none; }
-        #review-btn:not(.is-marked) .marked-icon { display: none; }
         .play-audio-btn { background: none; border: none; padding: 6px; cursor: pointer; transition: all 0.2s; display: inline-flex; vertical-align: middle; color: #0f172a; }
         .play-audio-btn:hover { transform: scale(1.1); color: #0ea5e9; }
         .play-audio-btn.playing, .play-audio-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .play-audio-btn.playing svg { color: #0ea5e9; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .loader { border: 2px solid #f3f3f3; border-top: 2px solid #3498db; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: inline-block; }
-        
         .modal.hidden { display: none; }
-        .progress-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(16px, 1fr));
-            gap: 4px;
-        }
+        .progress-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16px, 1fr)); gap: 4px; }
         .progress-dot { cursor: pointer; transition: transform 0.1s ease-in-out; }
         .progress-dot:hover { transform: scale(1.5); }
-        
-        #toast-notification {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #2d3748;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-        }
-        #toast-notification.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, -10px);
-        }
+        #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2d3748; color: white; padding: 12px 24px; border-radius: 8px; z-index: 100; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s, transform 0.3s; }
+        #toast-notification.show { opacity: 1; visibility: visible; transform: translate(-50%, -10px); }
     </style>
 </head>
 <body class="flex flex-col items-center">
@@ -80,13 +50,6 @@
                         <div id="card-back-content" class="text-left w-full h-full"></div>
                     </div>
                 </div>
-                <button id="review-btn" class="card-action-btn animated-button" title="Đánh dấu 'Chưa nhớ'">
-                    <svg class="unmarked-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                    <svg class="marked-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ef4444" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                </button>
-                <button id="delete-btn" class="card-action-btn animated-button" title="Xóa khỏi danh sách 'Chưa ghi nhớ'" style="right: 70px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                </button>
             </div>
 
             <div id="navigation-controls" class="flex items-center justify-between w-full my-8">
@@ -103,7 +66,6 @@
             
             <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-2">
                  <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-2">
-                    <!-- CHANGE: Added w-0 and responsive padding to fix button sizing on iOS -->
                     <button data-rating="hard" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-red-500 text-white rounded-xl flex-1 w-0 flex justify-center">Khó</button>
                     <button data-rating="good" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 w-0 flex justify-center">Bình thường</button>
                     <button data-rating="easy" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-green-500 text-white rounded-xl flex-1 w-0 flex justify-center">Dễ</button>
@@ -113,7 +75,7 @@
                  </button>
             </div>
 
-            <div class="p-3 bg-white rounded-2xl shadow-inner-sm flex flex-wrap items-center justify-center gap-3 w-full max-w-xl mx-auto border border-slate-200">
+            <div id="autoplay-controls-container" class="p-3 bg-white rounded-2xl shadow-inner-sm flex flex-wrap items-center justify-center gap-3 w-full max-w-xl mx-auto border border-slate-200">
                 <button id="play-pause-btn" class="animated-button px-4 py-2 bg-sky-500 text-white font-semibold rounded-lg flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:transform-none disabled:shadow-none"></button>
                 <div class="flex items-center gap-1">
                     <label for="play-speed-input" class="font-medium text-slate-600 text-xs whitespace-nowrap">Tốc độ:</label>
@@ -196,7 +158,6 @@
     <script>
         // --- CONSTANTS AND STATE VARIABLES ---
         const SRS_PROGRESS_KEY = "toeicSrsProgressData";
-        const REVIEW_LIST_KEY = "toeicReviewListData";
         const REVIEW_SESSION_KEY = "toeicReviewSession";
 
         let vocabularyData = {};
@@ -213,7 +174,6 @@
         let isReviewMode = false;
         let lastCompletedSessionWords = [];
         
-        // Audio related state
         let speechSynth = window.speechSynthesis;
         let availableVoices = [];
         let voicesLoaded = false;
@@ -230,8 +190,6 @@
             nextBtn: document.getElementById('next-btn'),
             cardCounter: document.getElementById('card-counter'),
             categorySelect: document.getElementById('category-select'),
-            reviewBtn: document.getElementById('review-btn'),
-            deleteBtn: document.getElementById('delete-btn'),
             playPauseBtn: document.getElementById('play-pause-btn'),
             playSpeedInput: document.getElementById('play-speed-input'),
             autoFlipToggle: document.getElementById('auto-flip-toggle'),
@@ -261,6 +219,7 @@
             statsGoodPercent: document.getElementById('stats-good-percent'),
             statsEasyCount: document.getElementById('stats-easy-count'),
             statsEasyPercent: document.getElementById('stats-easy-percent'),
+            autoplayControls: document.getElementById('autoplay-controls-container'), // CHANGE: Added reference
         };
         
         const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg><span>Phát</span>`;
@@ -272,7 +231,7 @@
         
         function findWordData(wordKey) {
             for (const category in vocabularyData) {
-                if (category !== "Chưa ghi nhớ" && vocabularyData[category][wordKey]) {
+                if (vocabularyData[category][wordKey]) {
                     return vocabularyData[category][wordKey];
                 }
             }
@@ -312,7 +271,7 @@
             today.setHours(23, 59, 59, 999);
             let queue = [];
             for (const category in vocabularyData) {
-                if (category === "Chưa ghi nhớ") continue;
+                if (category === "Tất cả chủ đề") continue; // CHANGE: Skip the 'All Words' category for SRS queue generation
                 for (const wordKey in vocabularyData[category]) {
                     if (srsProgressData.hasOwnProperty(wordKey)) {
                         const progress = srsProgressData[wordKey];
@@ -328,29 +287,6 @@
         }
 
         // --- DATA PERSISTENCE (LocalStorage) ---
-
-        function saveDataToLocalStorage() {
-            try {
-                const reviewList = vocabularyData["Chưa ghi nhớ"] || {};
-                localStorage.setItem(REVIEW_LIST_KEY, JSON.stringify(reviewList));
-            } catch (e) {
-                console.error("Failed to save review list:", e);
-                showErrorModal("Không thể lưu danh sách 'Chưa ghi nhớ'.");
-            }
-        }
-
-        function loadDataFromLocalStorage() {
-            const savedData = localStorage.getItem(REVIEW_LIST_KEY);
-            if (savedData) {
-                try {
-                    const loadedReviewList = JSON.parse(savedData);
-                    if (!vocabularyData["Chưa ghi nhớ"]) vocabularyData["Chưa ghi nhớ"] = {};
-                    Object.assign(vocabularyData["Chưa ghi nhớ"], loadedReviewList);
-                } catch (e) {
-                    console.error("Failed to parse review list:", e);
-                }
-            }
-        }
 
         function saveSrsProgress() {
             try {
@@ -400,16 +336,28 @@
         
         // --- UI RENDERING AND UPDATES ---
 
+        // CHANGE: New function to generate the 'All Words' category
+        function generateAllWordsCategory(data) {
+            const allWords = {};
+            // Sort categories alphabetically before merging for consistent order
+            const sortedCategories = Object.keys(data).sort();
+            for (const category of sortedCategories) {
+                Object.assign(allWords, data[category]);
+            }
+            data["Tất cả chủ đề"] = allWords;
+            return data;
+        }
+
+
         function createCategoryDropdown() {
             ui.categorySelect.innerHTML = '';
             let categoryKeys = Object.keys(vocabularyData);
 
             const reviewQueue = getReviewQueue();
-            const reviewCategoryKey = "Chưa ghi nhớ";
-            const reviewList = vocabularyData[reviewCategoryKey];
-            const hasReviewItems = reviewList && Object.keys(reviewList).length > 0;
             
-            let sortedKeys = categoryKeys.filter(key => key !== reviewCategoryKey);
+            // Separate special categories from regular ones
+            const specialKeys = ["Tất cả chủ đề"];
+            let sortedKeys = categoryKeys.filter(key => !specialKeys.includes(key));
             sortedKeys.sort();
 
             const reviewOption = document.createElement('option');
@@ -417,12 +365,12 @@
             reviewOption.textContent = `★ Ôn tập hôm nay (${reviewQueue.length})`;
             ui.categorySelect.appendChild(reviewOption);
 
-            if (hasReviewItems) {
-                const unmarkedOption = document.createElement('option');
-                unmarkedOption.value = reviewCategoryKey;
-                unmarkedOption.textContent = `♥ ${reviewCategoryKey} (${Object.keys(reviewList).length})`;
-                ui.categorySelect.appendChild(unmarkedOption);
-            }
+            // Add 'All Words' category option
+            const allWordsCount = Object.keys(vocabularyData["Tất cả chủ đề"] || {}).length;
+            const allWordsOption = document.createElement('option');
+            allWordsOption.value = "Tất cả chủ đề";
+            allWordsOption.textContent = `📚 Tất cả chủ đề (${allWordsCount})`;
+            ui.categorySelect.appendChild(allWordsOption);
 
             const separator = document.createElement('option');
             separator.disabled = true;
@@ -438,10 +386,16 @@
             });
         }
 
+
         function selectCategory(key, customWordList = null, resumeIndex = 0) {
             stopAutoplay();
             currentCategoryKey = key;
             isReviewMode = (key === "SRS_REVIEW_MODE");
+            
+            // CHANGE: Reset last completed session words if not in review mode
+            if (!isReviewMode) {
+                lastCompletedSessionWords = [];
+            }
 
             if (isReviewMode) {
                 currentWords = customWordList || [];
@@ -451,7 +405,9 @@
             }
             
             currentIndex = resumeIndex;
-            ui.categorySelect.value = key; 
+            if (ui.categorySelect.value !== key) {
+                ui.categorySelect.value = key; 
+            }
             updateNavigation(); 
             displayCard();
         }
@@ -468,10 +424,10 @@
             ui.srsRatingGroup.classList.remove('flex');
             ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
             ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
+            
+            // CHANGE: Hide autoplay controls in SRS mode
+            ui.autoplayControls.style.display = isReviewMode ? 'none' : 'flex';
 
-            const isManualReviewCategory = currentCategoryKey === "Chưa ghi nhớ";
-            ui.reviewBtn.style.display = isManualReviewCategory || isReviewMode ? 'none' : 'flex';
-            ui.deleteBtn.style.display = isManualReviewCategory ? 'flex' : 'none';
 
             setTimeout(() => { 
                 ui.cardFrontContent.innerHTML = '';
@@ -479,7 +435,7 @@
 
                 if (currentWords.length === 0 || currentIndex >= currentWords.length) {
                     if (isReviewMode) {
-                        lastCompletedSessionWords = [...currentWords];
+                        lastCompletedSessionWords = [...currentWords]; // Capture the list of words just completed
                         const messageP = document.createElement('p');
                         messageP.className = 'text-xl text-slate-500 mb-4';
                         messageP.textContent = 'Chúc mừng! Bạn đã hoàn thành phiên ôn tập.';
@@ -498,8 +454,6 @@
                         ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Chủ đề này chưa có từ nào.</p>`;
                     }
                     
-                    ui.reviewBtn.style.display = 'none';
-                    ui.deleteBtn.style.display = 'none';
                     if(isReviewMode) {
                         ui.srsControls.classList.add('hidden');
                         ui.shuffleBtn.classList.add('hidden');
@@ -603,21 +557,9 @@
                 });
 
                 ui.cardBackContent.appendChild(backContentWrapper);
-
-                updateReviewButtonState();
                 updateNavigation();
                 if(isReviewMode) saveReviewSession();
             }, 150);
-        }
-
-        function updateReviewButtonState() {
-            if (!currentWords || currentWords.length === 0 || currentCategoryKey === "Chưa ghi nhớ") {
-                ui.reviewBtn.classList.remove("is-marked");
-                return;
-            }
-            const wordKey = currentWords[currentIndex];
-            const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]);
-            ui.reviewBtn.classList.toggle("is-marked", isMarked);
         }
 
         function updateNavigation() {
@@ -637,10 +579,14 @@
             ui.progressGridContainer.innerHTML = '';
             
             let allWords = [];
-            for (const category in vocabularyData) {
-                if (category === "Chưa ghi nhớ") continue;
+             for (const category in vocabularyData) {
+                // CHANGE: Exclude the synthetic 'All Words' category from progress stats calculation
+                if (category === "Tất cả chủ đề") continue;
                 for (const wordKey in vocabularyData[category]) {
-                    allWords.push({ key: wordKey, category: category });
+                    // Avoid duplicates
+                    if (!allWords.some(item => item.key === wordKey)) {
+                         allWords.push({ key: wordKey, category: category });
+                    }
                 }
             }
 
@@ -705,11 +651,7 @@
             ui.statsEasyPercent.textContent = `${calcPercent(counts.easy)}%`;
         }
 
-        // --- AUDIO PLAYBACK (Browser-native SpeechSynthesis) ---
-
-        /**
-         * Loads available voices from the browser.
-         */
+        // --- AUDIO PLAYBACK ---
         function loadVoices() {
             if (voicesLoaded) return;
             availableVoices = speechSynth.getVoices();
@@ -718,11 +660,6 @@
             }
         }
         
-        /**
-         * Plays audio using the browser's built-in SpeechSynthesis API.
-         * @param {string} text The text to speak.
-         * @param {HTMLElement} buttonEl The button element that triggered the audio.
-         */
         function playBrowserAudio(text, buttonEl) {
             if (speechSynth.speaking) {
                 speechSynth.cancel();
@@ -731,37 +668,23 @@
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
 
-            // --- CHANGE: Enhanced voice selection logic for iOS and other platforms ---
-            const preferredVoices = [
-                'Siri',             // Prioritize Siri voices on Apple devices
-                'Samantha',         // High-quality iOS voice
-                'Google US English',// High-quality voice on Chrome/Android
-                'Alex',             // Another high-quality voice on Apple devices
-                'Daniel'            // High-quality UK voice often available
-            ];
-
+            const preferredVoices = ['Siri', 'Samantha', 'Google US English', 'Alex', 'Daniel'];
             let selectedVoice = null;
 
-            // Find the first preferred voice that contains the keyword
             for (const voiceName of preferredVoices) {
                 selectedVoice = availableVoices.find(voice => voice.name.includes(voiceName) && voice.lang.startsWith('en-'));
                 if (selectedVoice) break;
             }
 
-            // If no preferred voice is found, fall back to the best available local en-US voice
             if (!selectedVoice) {
                 selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US') && voice.localService);
             }
-            
-            // As a last resort, take any en-US voice
             if (!selectedVoice) {
                 selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US'));
             }
-
             if (selectedVoice) {
                 utterance.voice = selectedVoice;
             }
-            // --- END CHANGE ---
 
             const originalContent = buttonEl.innerHTML;
             buttonEl.innerHTML = loadingIconSVG;
@@ -774,7 +697,6 @@
 
             utterance.onend = cleanup;
             utterance.onerror = (e) => {
-                // CHANGE: Ignore "interrupted" and "canceled" errors which are expected when the user stops autoplay.
                 if (e.error === 'interrupted' || e.error === 'canceled') {
                     cleanup();
                     return;
@@ -811,51 +733,6 @@
         }
 
         // --- EVENT HANDLERS & USER ACTIONS ---
-
-        function handleReviewClick() {
-            if (!currentWords || currentWords.length === 0) return;
-            const wordKey = currentWords[currentIndex];
-            const isMarked = !!(vocabularyData["Chưa ghi nhớ"] && vocabularyData["Chưa ghi nhớ"][wordKey]);
-
-            if (isMarked) {
-                delete vocabularyData["Chưa ghi nhớ"][wordKey];
-                showToast(`Đã xóa "${wordKey}" khỏi danh sách 'Chưa ghi nhớ'.`);
-            } else {
-                const wordData = findWordData(wordKey);
-                if (wordData) {
-                    if (!vocabularyData["Chưa ghi nhớ"]) {
-                        vocabularyData["Chưa ghi nhớ"] = {};
-                    }
-                    vocabularyData["Chưa ghi nhớ"][wordKey] = { ...wordData };
-                    showToast(`Đã thêm "${wordKey}" vào danh sách 'Chưa ghi nhớ'.`);
-                }
-            }
-            saveDataToLocalStorage();
-            createCategoryDropdown();
-            updateReviewButtonState();
-        }
-
-        function handleDeleteFromReview() {
-            if (currentCategoryKey !== "Chưa ghi nhớ" || currentWords.length === 0) return;
-            const wordKey = currentWords[currentIndex];
-            
-            showConfirmModal(
-                "Xác nhận xóa",
-                `Bạn có chắc muốn xóa "${wordKey}" khỏi danh sách này không?`,
-                () => {
-                    delete vocabularyData["Chưa ghi nhớ"][wordKey];
-                    saveDataToLocalStorage();
-                    currentWords.splice(currentIndex, 1);
-                    if (currentIndex >= currentWords.length) {
-                        currentIndex = Math.max(0, currentWords.length - 1);
-                    }
-                    createCategoryDropdown();
-                    displayCard();
-                    showToast(`Đã xóa "${wordKey}".`);
-                }
-            );
-        }
-
         function handleSrsAnswer(rating) {
             if (!isReviewMode || currentWords.length === 0) return;
             
@@ -991,10 +868,8 @@
                     clearReviewSession();
                     updateProgressMatrixAndStats();
                     showToast("Đã xóa toàn bộ tiến trình học tập.");
-                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
-                    if (firstCategory) {
-                        selectCategory(firstCategory);
-                    }
+                    // Go to the 'All Words' category after reset
+                    selectCategory("Tất cả chủ đề");
                 }
             );
         }
@@ -1054,12 +929,11 @@
 
         function initializeApp(data) {
             vocabularyData = data;
-            if (!vocabularyData["Chưa ghi nhớ"]) {
-                vocabularyData["Chưa ghi nhớ"] = {};
-            }
-            loadDataFromLocalStorage(); 
             loadSrsProgress();
             ui.playPauseBtn.innerHTML = playIconSVG;
+            
+            // CHANGE: Generate the 'All Words' category before creating the dropdown
+            vocabularyData = generateAllWordsCategory(vocabularyData);
             createCategoryDropdown();
             
             // --- Event Listeners ---
@@ -1103,8 +977,6 @@
             });
 
             ui.playPauseBtn.addEventListener('click', () => { isPlaying ? stopAutoplay() : startAutoplay(); });
-            ui.reviewBtn.addEventListener('click', handleReviewClick);
-            ui.deleteBtn.addEventListener('click', handleDeleteFromReview);
             ui.closeErrorModalBtn.addEventListener('click', () => {
                 ui.errorModal.classList.add('hidden');
                 unlockBodyScroll();
@@ -1162,13 +1034,9 @@
             } else {
                 let reviewQueue = getReviewQueue();
                 if (reviewQueue.length > 0) {
-                    for (let i = reviewQueue.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
-                    }
                      selectCategory("SRS_REVIEW_MODE", reviewQueue, 0);
                 } else {
-                    const firstCategory = Object.keys(vocabularyData).find(k => k !== "Chưa ghi nhớ");
+                    const firstCategory = "Tất cả chủ đề";
                     if (firstCategory) {
                         selectCategory(firstCategory);
                     } else {
@@ -1195,7 +1063,6 @@
 
         // --- APP START ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Load voices for browser-native TTS
             loadVoices();
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = loadVoices;
