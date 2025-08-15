@@ -104,7 +104,7 @@
                 </div>
             </div>
         </main>
-
+        
         <footer class="w-full pt-4 pb-4">
             <div class="flex items-center gap-3 w-full max-w-xl mx-auto">
                 <div class="relative flex-grow">
@@ -164,8 +164,6 @@
     <div id="toast-notification"></div>
 
     <script>
-        // The JavaScript logic remains the same as the previous version.
-        // All changes were made in the HTML structure and Tailwind CSS classes.
         // --- CONSTANTS AND STATE VARIABLES ---
         const SRS_PROGRESS_KEY = "toeicSrsProgressData";
         const REVIEW_SESSION_KEY = "toeicReviewSession";
@@ -652,7 +650,79 @@
             ui.statsEasyCount.textContent = counts.easy;
             ui.statsEasyPercent.textContent = `${calcPercent(counts.easy)}%`;
         }
+
+        function playAudio(text, buttonEl) {
+            if (!text || buttonEl.disabled) return;
+            playBrowserAudio(text, buttonEl);
+        }
         
+        async function playAudioSequence(buttons) {
+            for (const btn of buttons) {
+                if (!isPlaying) break;
+                const text = btn.dataset.textToSpeak;
+                if (text) {
+                    await new Promise(resolve => {
+                        playAudio(text, btn);
+                        const checkEnd = setInterval(() => {
+                            if (!speechSynth.speaking || !isPlaying) {
+                                clearInterval(checkEnd);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                }
+            }
+        }
+        
+        function playBrowserAudio(text, buttonEl) {
+            if (speechSynth.speaking) {
+                speechSynth.cancel();
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+
+            const preferredVoices = ['Siri', 'Samantha', 'Google US English', 'Alex', 'Daniel'];
+            let selectedVoice = null;
+
+            for (const voiceName of preferredVoices) {
+                selectedVoice = availableVoices.find(voice => voice.name.includes(voiceName) && voice.lang.startsWith('en-'));
+                if (selectedVoice) break;
+            }
+
+            if (!selectedVoice) {
+                selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US') && voice.localService);
+            }
+            if (!selectedVoice) {
+                selectedVoice = availableVoices.find(voice => voice.lang.startsWith('en-US'));
+            }
+            if (selectedVoice) {
+                utterance.voice = selectedVoice;
+            }
+
+            const originalContent = buttonEl.innerHTML;
+            buttonEl.innerHTML = loadingIconSVG;
+            buttonEl.disabled = true;
+
+            const cleanup = () => {
+                buttonEl.innerHTML = originalContent;
+                buttonEl.disabled = false;
+            };
+
+            utterance.onend = cleanup;
+            utterance.onerror = (e) => {
+                if (e.error === 'interrupted' || e.error === 'canceled') {
+                    cleanup();
+                    return;
+                }
+                console.error("SpeechSynthesis Error:", e);
+                showErrorModal(`Trình duyệt không hỗ trợ phát âm thanh (${e.error})`, "Lỗi tương thích");
+                cleanup();
+            };
+
+            speechSynth.speak( utterance );
+        }
+
         // --- EVENT HANDLERS & USER ACTIONS ---
         function handleSrsAnswer(rating) {
             if (!isReviewMode || currentWords.length === 0) return;
@@ -666,7 +736,190 @@
             updateNavigation();
         }
         
-        // ... (rest of the script, no further changes needed)
+        function navigate(direction) {
+            if (currentWords.length > 1) {
+                let newIndex = currentIndex + direction;
+                if (newIndex >= currentWords.length) {
+                    newIndex = 0;
+                }
+                if (newIndex < 0) {
+                    newIndex = currentWords.length - 1;
+                }
+                currentIndex = newIndex;
+                displayCard();
+            }
+        }
+
+        function startAutoplay() {
+            if (currentWords.length > 0) {
+                isPlaying = true;
+                ui.playPauseBtn.innerHTML = pauseIconSVG;
+                ui.flashcard.style.pointerEvents = "none";
+                updateNavigation();
+                runAutoplayCycle();
+            } else {
+                showErrorModal("Vui lòng chọn một chủ đề có từ vựng để bắt đầu.");
+            }
+        }
+
+        function stopAutoplay() {
+            if (isPlaying) {
+                isPlaying = false;
+                clearTimeout(autoplayInterval);
+                autoplayInterval = null;
+                if (speechSynth.speaking) {
+                    speechSynth.cancel();
+                }
+                ui.playPauseBtn.innerHTML = playIconSVG;
+                ui.flashcard.style.pointerEvents = "auto";
+                updateNavigation();
+            }
+        }
+
+        async function runAutoplayCycle() { 
+            if (!isPlaying) return; 
+            
+            if (ui.flashcard.classList.contains("is-flipped")) {
+                ui.flashcard.classList.remove("is-flipped");
+                await new Promise(r => setTimeout(r, 350));
+            } 
+            if (!isPlaying) return; 
+            
+            const shouldFlip = ui.autoFlipToggle.checked; 
+            const shouldPlayAudio = ui.autoPlayAudioToggle.checked; 
+            const shouldPlayExamples = ui.autoPlayExamplesToggle.checked; 
+            const isAudioMode = shouldPlayAudio || shouldPlayExamples; 
+
+            if (isAudioMode) { 
+                if (shouldFlip) {
+                    ui.flashcard.classList.add("is-flipped");
+                    await new Promise(r => setTimeout(r, 200));
+                } 
+                if (!isPlaying) return; 
+                
+                const wordKey = currentWords[currentIndex]; 
+                let audioButtonsToPlay = []; 
+                if (shouldPlayAudio) {
+                    const mainBtn = ui.cardBackContent.querySelector(`.play-audio-btn[data-text-to-speak="${wordKey}"]`);
+                    if (mainBtn) audioButtonsToPlay.push(mainBtn);
+                } 
+                if (shouldPlayExamples) {
+                    const exampleBtn = ui.cardBackContent.querySelector(`.play-audio-btn:not([data-text-to-speak="${wordKey}"])`);
+                    if (exampleBtn) audioButtonsToPlay.push(exampleBtn);
+                } 
+                await playAudioSequence(audioButtonsToPlay); 
+            } else { 
+                let delay = parseInt(ui.playSpeedInput.value, 10) * 1000; 
+                await new Promise(r => setTimeout(r, shouldFlip ? delay / 2 : delay)); 
+                if (!isPlaying) return; 
+                if (shouldFlip) {
+                    ui.flashcard.classList.add("is-flipped");
+                    await new Promise(r => setTimeout(r, 200));
+                } 
+                if (isPlaying) await new Promise(r => setTimeout(r, delay / 2)); 
+            } 
+            
+            if (!isPlaying) return; 
+            navigate(1);
+            autoplayInterval = setTimeout(runAutoplayCycle, 300);
+        }
+
+        function shuffleCurrentQueue() {
+            if (!isReviewMode || currentWords.length < 2) return;
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            currentIndex = 0;
+            displayCard();
+            showToast("Đã xáo trộn danh sách ôn tập!");
+        }
+
+        function restartReviewSession() {
+            if (!isReviewMode || lastCompletedSessionWords.length === 0) return;
+            
+            currentWords = [...lastCompletedSessionWords];
+            currentIndex = 0;
+
+            for (let i = currentWords.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
+            }
+            
+            updateSrsReviewButton();
+
+            displayCard();
+        }
+
+        function resetAllProgress() {
+            showConfirmModal(
+                "Xác nhận xóa tiến trình",
+                "Bạn có chắc chắn muốn xóa toàn bộ tiến trình học tập không? Hành động này không thể hoàn tác.",
+                () => {
+                    srsProgressData = {};
+                    localStorage.removeItem(SRS_PROGRESS_KEY);
+                    clearReviewSession();
+                    updateProgressMatrixAndStats();
+                    createCategoryDropdown();
+                    updateSrsReviewButton();
+                    showToast("Đã xóa toàn bộ tiến trình học tập.");
+                    selectCategory("Tất cả chủ đề");
+                }
+            );
+        }
+
+        // --- MODAL AND TOAST NOTIFICATION ---
+
+        function showToast(message) {
+            ui.toast.textContent = message;
+            ui.toast.classList.add('show');
+            setTimeout(() => {
+                ui.toast.classList.remove('show');
+            }, 2000);
+        }
+
+        function showErrorModal(message, title = "Đã xảy ra lỗi") { 
+            ui.errorTitle.textContent = title;
+            ui.errorMessage.textContent = message; 
+            ui.errorModal.classList.remove("hidden"); 
+            lockBodyScroll();
+        }
+
+        function showConfirmModal(title, message, onConfirm) {
+            ui.confirmTitle.textContent = title;
+            ui.confirmMessage.textContent = message;
+            ui.confirmModal.classList.remove('hidden');
+            lockBodyScroll();
+
+            const confirmHandler = () => {
+                onConfirm();
+                closeAndCleanup();
+            };
+
+            const cancelHandler = () => {
+                closeAndCleanup();
+            };
+            
+            const closeAndCleanup = () => {
+                ui.confirmModal.classList.add('hidden');
+                unlockBodyScroll();
+                ui.confirmBtn.removeEventListener('click', confirmHandler);
+                ui.cancelBtn.removeEventListener('click', cancelHandler);
+            };
+
+            ui.confirmBtn.addEventListener('click', confirmHandler);
+            ui.cancelBtn.addEventListener('click', cancelHandler);
+        }
+
+        function lockBodyScroll() {
+            document.body.classList.add('modal-open');
+        }
+
+        function unlockBodyScroll() {
+            document.body.classList.remove('modal-open');
+        }
+
+        // --- INITIALIZATION ---
 
         function initializeApp(data) {
             vocabularyData = data;
@@ -678,6 +931,45 @@
             updateSrsReviewButton();
 
             // --- Event Listeners ---
+            ui.prevBtn.addEventListener('click', () => navigate(-1));
+            ui.nextBtn.addEventListener('click', () => navigate(1));
+            
+            let touchstartX = 0, touchstartY = 0;
+            ui.flashcard.addEventListener('touchstart', e => {
+                touchstartX = e.changedTouches[0].screenX;
+                touchstartY = e.changedTouches[0].screenY;
+            }, { passive: true });
+
+            ui.flashcard.addEventListener('touchend', e => { 
+                const touchendX = e.changedTouches[0].screenX;
+                const touchendY = e.changedTouches[0].screenY;
+                const swipeThreshold = 50;
+                const swipeRestraint = 100;
+                const swipedX = touchendX - touchstartX;
+                const swipedY = touchendY - touchstartY;
+                if (Math.abs(swipedX) < swipeThreshold || Math.abs(swipedY) > swipeRestraint) return;
+                
+                if (!isReviewMode) {
+                    if (swipedX < 0) navigate(1);
+                    if (swipedX > 0) navigate(-1);
+                }
+            });
+
+            ui.flashcard.addEventListener('click', (e) => {
+                if (e.target.closest('.card-action-btn') || e.target.closest('.play-audio-btn')) {
+                    return;
+                }
+
+                if (isReviewMode) {
+                    ui.flashcard.classList.toggle('is-flipped');
+                    const isFlipped = ui.flashcard.classList.contains('is-flipped');
+                    ui.srsRatingGroup.classList.toggle('hidden', !isFlipped);
+                    ui.srsRatingGroup.classList.toggle('flex', isFlipped);
+                } else if (currentWords.length > 0) {
+                    ui.flashcard.classList.toggle('is-flipped');
+                }
+            });
+
             ui.srsReviewBtn.addEventListener('click', () => {
                 let reviewQueue = getReviewQueue();
                 if (reviewQueue.length > 0) {
@@ -689,15 +981,49 @@
                 }
             });
             
+            ui.playPauseBtn.addEventListener('click', () => { isPlaying ? stopAutoplay() : startAutoplay(); });
+            ui.closeErrorModalBtn.addEventListener('click', () => {
+                ui.errorModal.classList.add('hidden');
+                unlockBodyScroll();
+            });
+            
+            ui.progressMatrixBtn.addEventListener('click', () => {
+                updateProgressMatrixAndStats();
+                ui.progressMatrixModal.classList.remove('hidden');
+                lockBodyScroll();
+            });
+            ui.closeProgressMatrixBtn.addEventListener('click', () => {
+                ui.progressMatrixModal.classList.add('hidden');
+                unlockBodyScroll();
+            });
+            ui.progressMatrixModal.addEventListener('click', (e) => {
+                if (e.target === ui.progressMatrixModal) {
+                    ui.progressMatrixModal.classList.add('hidden');
+                    unlockBodyScroll();
+                }
+            });
+
+            ui.shuffleBtn.addEventListener('click', shuffleCurrentQueue);
+            ui.resetProgressBtn.addEventListener('click', resetAllProgress);
+
+            document.querySelectorAll('.srs-rating-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handleSrsAnswer(e.target.dataset.rating);
+                });
+            });
+
+            [ui.autoPlayAudioToggle, ui.autoPlayExamplesToggle].forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    ui.playSpeedInput.disabled = ui.autoPlayAudioToggle.checked || ui.autoPlayExamplesToggle.checked;
+                });
+            });
+
             ui.categorySelect.addEventListener('change', (e) => {
                 const selectedKey = e.target.value;
                 selectCategory(selectedKey);
             });
-            
-            // Other listeners... (prev, next, flip, etc.)
-            // ... (No change here)
 
-            // --- Initial state logic ---
             const savedSession = loadReviewSession();
             if (savedSession && savedSession.words.length > 0 && savedSession.index < savedSession.words.length) {
                 selectCategory("SRS_REVIEW_MODE", savedSession.words, savedSession.index);
@@ -725,13 +1051,17 @@
                 showErrorModal(`${error.message}. Hãy chắc chắn rằng bạn đã có tệp vocabulary.json trong cùng thư mục.`, "Lỗi tải dữ liệu");
             }
         }
+        
+        function loadVoices() {
+            if (voicesLoaded) return;
+            availableVoices = speechSynthesis.getVoices();
+            if (availableVoices.length > 0) {
+                voicesLoaded = true;
+            }
+        }
 
         // --- APP START ---
         document.addEventListener('DOMContentLoaded', () => {
-            // This part is a template, the full script is too long to repeat.
-            // The logic from the previous turn is assumed to be here.
-            // ...
-            // Initialize event listeners and the app
             loadVoices();
             if (speechSynthesis.onvoiceschanged !== undefined) {
                 speechSynthesis.onvoiceschanged = loadVoices;
