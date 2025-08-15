@@ -39,7 +39,7 @@
 
     <div class="w-full max-w-3xl mx-auto flex flex-col flex-grow">
         <main class="flex-grow">
-            <div class="flashcard-container w-full h-[32rem] md:h-[36rem] mb-6 relative mt-4">
+            <div class="flashcard-container w-full h-[32rem] md:h-[38rem] mb-6 relative mt-4">
                 <div id="flashcard" class="flashcard">
                     <div class="flashcard-face flashcard-front">
                         <div id="card-front-content" class="text-center p-4">
@@ -428,6 +428,7 @@
             ui.srsControls.classList.toggle('flex', isReviewMode);
             ui.autoplayControls.style.display = isReviewMode ? 'none' : 'flex';
 
+            // Reset rating buttons to be invisible before the flip
             ui.srsRatingGroup.classList.add('invisible', 'opacity-0');
             ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
             ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
@@ -472,7 +473,8 @@
                     return; 
                 }
 
-                ui.cardFrontContent.innerHTML = `<h2 class="text-4xl md:text-5xl font-bold text-center break-words text-slate-800">${wordKey}</h2>`;
+                // CHANGE: Use custom font size [45px]
+                ui.cardFrontContent.innerHTML = `<h2 class="text-[45px] font-bold text-center break-words text-slate-800">${wordKey}</h2>`;
                 
                 const backContentWrapper = document.createElement('div');
                 backContentWrapper.className = 'p-4 w-full';
@@ -969,7 +971,7 @@
                 if (isReviewMode) {
                     ui.flashcard.classList.toggle('is-flipped');
                     const isFlipped = ui.flashcard.classList.contains('is-flipped');
-                    // CHANGE: Toggle visibility instead of display
+                    // CHANGE: Toggle visibility for smooth flip
                     ui.srsRatingGroup.classList.toggle('invisible', !isFlipped);
                     ui.srsRatingGroup.classList.toggle('opacity-0', !isFlipped);
                 } else if (currentWords.length > 0) {
@@ -1029,28 +1031,21 @@
             ui.categorySelect.addEventListener('change', (e) => {
                 const selectedKey = e.target.value;
                 selectCategory(selectedKey);
-});
+            });
 
-            // CHANGE: Updated initial loading logic to prioritize SRS review
+            // CHANGE: Updated initial loading logic to NOT auto-start a new SRS session
             const savedSession = loadReviewSession();
             if (savedSession && savedSession.words.length > 0 && savedSession.index < savedSession.words.length) {
+                // Only resume if a session was already in progress
                 selectCategory("SRS_REVIEW_MODE", savedSession.words, savedSession.index);
             } else {
-                let reviewQueue = getReviewQueue();
-                if (reviewQueue.length > 0) {
-                    for (let i = reviewQueue.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [reviewQueue[i], reviewQueue[j]] = [reviewQueue[j], reviewQueue[i]];
-                    }
-                    selectCategory("SRS_REVIEW_MODE", reviewQueue, 0);
+                // Otherwise, always default to a standard category
+                const firstCategory = "Tất cả chủ đề";
+                if (vocabularyData[firstCategory]) {
+                    selectCategory(firstCategory);
                 } else {
-                    const firstCategory = "Tất cả chủ đề";
-                    if (vocabularyData[firstCategory]) {
-                        selectCategory(firstCategory);
-                    } else {
-                        ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Không có dữ liệu từ vựng nào.</p>`;
-                        updateNavigation();
-                    }
+                    ui.cardFrontContent.innerHTML = `<p class="text-xl text-slate-500">Không có dữ liệu từ vựng nào.</p>`;
+                    updateNavigation();
                 }
             }
         }
