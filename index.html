@@ -64,17 +64,22 @@
                 </button>
             </div>
             
-            <div id="srs-controls" class="hidden items-center justify-center w-full mb-8 space-x-2">
-                 <div id="srs-rating-group" class="hidden items-center justify-center w-full space-x-2">
-                    <button data-rating="hard" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-red-500 text-white rounded-xl flex-1 w-0 flex justify-center">Khó</button>
-                    <button data-rating="good" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 w-0 flex justify-center">Bình thường</button>
-                    <button data-rating="easy" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-green-500 text-white rounded-xl flex-1 w-0 flex justify-center">Dễ</button>
-                 </div>
-                 <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
-                 </button>
-            </div>
+            <div id="srs-controls" class="hidden flex-col items-center justify-center w-full mb-8 space-y-4">
+                <div id="srs-rating-group" class="hidden w-full items-center justify-center space-x-2">
+                   <button data-rating="hard" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-red-500 text-white rounded-xl flex-1 w-0 flex justify-center">Khó</button>
+                   <button data-rating="good" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-blue-500 text-white rounded-xl flex-1 w-0 flex justify-center">Bình thường</button>
+                   <button data-rating="easy" class="srs-rating-btn animated-button px-4 sm:px-6 py-3 bg-green-500 text-white rounded-xl flex-1 w-0 flex justify-center">Dễ</button>
+                </div>
 
+                <div class="flex items-center justify-center gap-3">
+                    <button id="progress-matrix-btn" class="animated-button p-3 bg-white text-slate-600 rounded-xl" title="Tiến độ học tập">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 0"/><path d="M12.7 14a6 6 0 0 0-6 0"/><path d="M6.7 20a6 6 0 0 0-6 0"/></svg>
+                    </button>
+                    <button id="shuffle-btn" class="hidden animated-button p-3 bg-white text-slate-600 rounded-xl" title="Xáo trộn danh sách ôn tập">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"></polyline><line x1="4" y1="20" x2="21" y2="3"></line><polyline points="21 16 21 21 16 21"></polyline><line x1="15" y1="15" x2="21" y2="21"></line><line x1="4" y1="4" x2="9" y2="9"></line></svg>
+                    </button>
+                </div>
+            </div>
             <div id="autoplay-controls-container" class="p-3 bg-white rounded-2xl shadow-inner-sm flex flex-wrap items-center justify-center gap-3 w-full max-w-xl mx-auto border border-slate-200">
                 <button id="play-pause-btn" class="animated-button px-4 py-2 bg-sky-500 text-white font-semibold rounded-lg flex items-center justify-center gap-2 disabled:bg-slate-300 disabled:transform-none disabled:shadow-none"></button>
                 <div class="flex items-center gap-1">
@@ -96,9 +101,6 @@
                         <label for="auto-play-examples-toggle" class="font-medium text-slate-600 text-xs">Tự phát ví dụ</label>
                     </div>
                 </div>
-                <button id="progress-matrix-btn" class="animated-button p-2 bg-white text-slate-600 rounded-lg" title="Tiến độ học tập">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8a6 6 0 0 0-6 0"/><path d="M12.7 14a6 6 0 0 0-6 0"/><path d="M6.7 20a6 6 0 0 0-6 0"/></svg>
-                </button>
             </div>
         </main>
         
@@ -219,7 +221,7 @@
             statsGoodPercent: document.getElementById('stats-good-percent'),
             statsEasyCount: document.getElementById('stats-easy-count'),
             statsEasyPercent: document.getElementById('stats-easy-percent'),
-            autoplayControls: document.getElementById('autoplay-controls-container'), // CHANGE: Added reference
+            autoplayControls: document.getElementById('autoplay-controls-container'),
         };
         
         const playIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/></svg><span>Phát</span>`;
@@ -271,7 +273,7 @@
             today.setHours(23, 59, 59, 999);
             let queue = [];
             for (const category in vocabularyData) {
-                if (category === "Tất cả chủ đề") continue; // CHANGE: Skip the 'All Words' category for SRS queue generation
+                if (category === "Tất cả chủ đề") continue;
                 for (const wordKey in vocabularyData[category]) {
                     if (srsProgressData.hasOwnProperty(wordKey)) {
                         const progress = srsProgressData[wordKey];
@@ -336,10 +338,8 @@
         
         // --- UI RENDERING AND UPDATES ---
 
-        // CHANGE: New function to generate the 'All Words' category
         function generateAllWordsCategory(data) {
             const allWords = {};
-            // Sort categories alphabetically before merging for consistent order
             const sortedCategories = Object.keys(data).sort();
             for (const category of sortedCategories) {
                 Object.assign(allWords, data[category]);
@@ -355,7 +355,6 @@
 
             const reviewQueue = getReviewQueue();
             
-            // Separate special categories from regular ones
             const specialKeys = ["Tất cả chủ đề"];
             let sortedKeys = categoryKeys.filter(key => !specialKeys.includes(key));
             sortedKeys.sort();
@@ -365,7 +364,6 @@
             reviewOption.textContent = `★ Ôn tập hôm nay (${reviewQueue.length})`;
             ui.categorySelect.appendChild(reviewOption);
 
-            // Add 'All Words' category option
             const allWordsCount = Object.keys(vocabularyData["Tất cả chủ đề"] || {}).length;
             const allWordsOption = document.createElement('option');
             allWordsOption.value = "Tất cả chủ đề";
@@ -392,7 +390,6 @@
             currentCategoryKey = key;
             isReviewMode = (key === "SRS_REVIEW_MODE");
             
-            // CHANGE: Reset last completed session words if not in review mode
             if (!isReviewMode) {
                 lastCompletedSessionWords = [];
             }
@@ -418,16 +415,16 @@
             }
             
             ui.navigationControls.style.display = isReviewMode ? 'none' : 'flex';
+            
+            // Manage visibility of control groups
             ui.srsControls.classList.toggle('hidden', !isReviewMode);
             ui.srsControls.classList.toggle('flex', isReviewMode);
-            ui.srsRatingGroup.classList.add('hidden');
-            ui.srsRatingGroup.classList.remove('flex');
-            ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
-            ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
-            
-            // CHANGE: Hide autoplay controls in SRS mode
             ui.autoplayControls.style.display = isReviewMode ? 'none' : 'flex';
 
+            // Specific controls inside SRS mode
+            ui.srsRatingGroup.classList.add('hidden');
+            ui.shuffleBtn.classList.toggle('hidden', !isReviewMode || currentWords.length < 2);
+            ui.shuffleBtn.classList.toggle('flex', isReviewMode && currentWords.length >= 2);
 
             setTimeout(() => { 
                 ui.cardFrontContent.innerHTML = '';
@@ -435,7 +432,7 @@
 
                 if (currentWords.length === 0 || currentIndex >= currentWords.length) {
                     if (isReviewMode) {
-                        lastCompletedSessionWords = [...currentWords]; // Capture the list of words just completed
+                        lastCompletedSessionWords = [...currentWords];
                         const messageP = document.createElement('p');
                         messageP.className = 'text-xl text-slate-500 mb-4';
                         messageP.textContent = 'Chúc mừng! Bạn đã hoàn thành phiên ôn tập.';
@@ -456,7 +453,6 @@
                     
                     if(isReviewMode) {
                         ui.srsControls.classList.add('hidden');
-                        ui.shuffleBtn.classList.add('hidden');
                     }
                     updateNavigation();
                     return;
@@ -580,10 +576,8 @@
             
             let allWords = [];
              for (const category in vocabularyData) {
-                // CHANGE: Exclude the synthetic 'All Words' category from progress stats calculation
                 if (category === "Tất cả chủ đề") continue;
                 for (const wordKey in vocabularyData[category]) {
-                    // Avoid duplicates
                     if (!allWords.some(item => item.key === wordKey)) {
                          allWords.push({ key: wordKey, category: category });
                     }
@@ -741,6 +735,13 @@
             updateProgressMatrixAndStats();
 
             currentIndex++;
+
+            const reviewOption = ui.categorySelect.querySelector('option[value="SRS_REVIEW_MODE"]');
+            if (reviewOption) {
+                const remaining = currentWords.length - currentIndex;
+                reviewOption.textContent = `★ Ôn tập hôm nay (${remaining})`;
+            }
+            
             displayCard();
             updateNavigation();
         }
@@ -855,6 +856,11 @@
                 [currentWords[i], currentWords[j]] = [currentWords[j], currentWords[i]];
             }
             
+            const reviewOption = ui.categorySelect.querySelector('option[value="SRS_REVIEW_MODE"]');
+            if (reviewOption) {
+                reviewOption.textContent = `★ Ôn tập hôm nay (${currentWords.length})`;
+            }
+
             displayCard();
         }
 
@@ -867,8 +873,8 @@
                     localStorage.removeItem(SRS_PROGRESS_KEY);
                     clearReviewSession();
                     updateProgressMatrixAndStats();
+                    createCategoryDropdown();
                     showToast("Đã xóa toàn bộ tiến trình học tập.");
-                    // Go to the 'All Words' category after reset
                     selectCategory("Tất cả chủ đề");
                 }
             );
@@ -932,7 +938,6 @@
             loadSrsProgress();
             ui.playPauseBtn.innerHTML = playIconSVG;
             
-            // CHANGE: Generate the 'All Words' category before creating the dropdown
             vocabularyData = generateAllWordsCategory(vocabularyData);
             createCategoryDropdown();
             
